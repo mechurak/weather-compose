@@ -15,7 +15,21 @@
  */
 package com.shimnssso.weather.ui.home
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -25,9 +39,16 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.shimnssso.weather.R
@@ -40,7 +61,109 @@ fun HomeScreen(
     Scaffold(
         topBar = { AppBar(navController) }
     ) { innerPadding ->
-        Text("Home Screen")
+
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Text("Suji-gu")
+            Text("Fri, 19 Mar 2021, 8:00PM")
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box(modifier = Modifier.size(200.dp)) {
+                    Image(
+                        painter = painterResource(R.drawable.ella),
+                        contentDescription = "ella",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(CircleShape) // clip to the circle shape
+                            .border(2.dp, Color.Gray, CircleShape) // add a border (optional)
+                    )
+                    Icon(
+                        Icons.Filled.WbSunny,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clip(CircleShape)
+                            .size(30.dp)
+                            .background(Color.Green.copy(alpha = 0.7f))
+                            .align(Alignment.BottomEnd)
+                    )
+                }
+                Column {
+                    Text("16º")
+                    Text("18º/3º")
+                    Text("Good")
+                }
+            }
+
+            Divider(Modifier.padding(top = 16.dp))
+
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(top = 16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    for (i in 1..5) {
+                        Column {
+                            Text("12AM")
+                            Icon(
+                                Icons.Filled.WbSunny,
+                                contentDescription = null,
+                            )
+                            Text("16º")
+                            Text("30%")
+                        }
+                    }
+                }
+
+                Divider(Modifier.padding(vertical = 12.dp))
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Yesterday", modifier = Modifier.fillMaxWidth(0.3f))
+                        Text("80%")
+                        Icon(
+                            Icons.Filled.WbSunny,
+                            contentDescription = null,
+                        )
+                        Text("18º/2º")
+                    }
+                    for (i in 1..7) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Sat", modifier = Modifier.fillMaxWidth(0.3f))
+                            Text("80%")
+                            Icon(
+                                Icons.Filled.WbSunny,
+                                contentDescription = null,
+                            )
+                            Text("18º/2º")
+                        }
+                    }
+                }
+                Divider(Modifier.padding(vertical = 12.dp))
+                Text("designed by Freepik from Flaticon") // https://www.flaticon.com/packs/weather-255
+            }
+        }
     }
 }
 

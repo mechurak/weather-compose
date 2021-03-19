@@ -16,16 +16,18 @@
 package com.shimnssso.weather.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -39,7 +41,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -73,30 +74,40 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Box(modifier = Modifier.size(200.dp)) {
+                Box(
+                    modifier = Modifier
+                        .width(240.dp)
+                        .height(200.dp)
+                ) {
                     Image(
                         painter = painterResource(R.drawable.ella),
                         contentDescription = "ella",
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxHeight()
                             .clip(CircleShape) // clip to the circle shape
-                            .border(2.dp, Color.Gray, CircleShape) // add a border (optional)
+                            .border(2.dp, Color.Black, CircleShape) // add a border (optional)
+                            .align(Alignment.Center)
                     )
-                    Icon(
-                        Icons.Filled.WbSunny,
-                        contentDescription = null,
+                    Image(
+                        painter = painterResource(R.drawable.ic__01_sunny),
+                        contentDescription = "sunny",
                         modifier = Modifier
-                            .padding(4.dp)
-                            .clip(CircleShape)
-                            .size(30.dp)
-                            .background(Color.Green.copy(alpha = 0.7f))
+                            .size(80.dp)
+                            .align(Alignment.BottomStart)
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.air_1_very_good_28_happy),
+                        contentDescription = "very_good",
+                        modifier = Modifier
+                            .size(60.dp)
                             .align(Alignment.BottomEnd)
                     )
                 }
                 Column {
                     Text("16º")
                     Text("18º/3º")
-                    Text("Good")
+                    Text("Sunny")
+                    Text("Very Good")
                 }
             }
 
@@ -113,14 +124,21 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     for (i in 1..5) {
-                        Column {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("12AM")
-                            Icon(
-                                Icons.Filled.WbSunny,
-                                contentDescription = null,
+                            Image(
+                                painter = painterResource(R.drawable.ic__02_cloudy),
+                                contentDescription = "cloudy",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Image(
+                                painter = painterResource(R.drawable.air_2_fair_47_happy),
+                                contentDescription = "fair",
+                                modifier = Modifier
+                                    .size(30.dp)
                             )
                             Text("16º")
-                            Text("30%")
                         }
                     }
                 }
@@ -135,10 +153,17 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("Yesterday", modifier = Modifier.fillMaxWidth(0.3f))
-                        Text("80%")
-                        Icon(
-                            Icons.Filled.WbSunny,
-                            contentDescription = null,
+                        Image(
+                            painter = painterResource(R.drawable.ic__03_rain),
+                            contentDescription = "rain",
+                            modifier = Modifier
+                                .size(50.dp)
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.air_5_very_poor_36_devil),
+                            contentDescription = "rain",
+                            modifier = Modifier
+                                .size(30.dp)
                         )
                         Text("18º/2º")
                     }
@@ -151,10 +176,17 @@ fun HomeScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text("Sat", modifier = Modifier.fillMaxWidth(0.3f))
-                            Text("80%")
-                            Icon(
-                                Icons.Filled.WbSunny,
-                                contentDescription = null,
+                            Image(
+                                painter = painterResource(R.drawable.ic__01_sunny),
+                                contentDescription = "sunny",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Image(
+                                painter = painterResource(R.drawable.air_3_moderate_04_surprised),
+                                contentDescription = "moderate",
+                                modifier = Modifier
+                                    .size(30.dp)
                             )
                             Text("18º/2º")
                         }
@@ -162,6 +194,7 @@ fun HomeScreen(
                 }
                 Divider(Modifier.padding(vertical = 12.dp))
                 Text("designed by Freepik from Flaticon") // https://www.flaticon.com/packs/weather-255
+                Text("designed by Baianat from Flaticon") // https://www.flaticon.com/packs/color-emotions-assets
             }
         }
     }

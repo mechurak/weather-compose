@@ -15,7 +15,15 @@
  */
 package com.shimnssso.weather.ui.setting
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -26,18 +34,65 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import com.shimnssso.weather.MainActivity
+import com.shimnssso.weather.data.AssetViewModel
+import dev.chrisbanes.accompanist.coil.CoilImage
+import java.io.File
 
 @Composable
 fun SettingScreen(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    navController: NavController? = null
+    navController: NavController? = null,
+    assetViewModel: AssetViewModel
 ) {
     Scaffold(
         topBar = { AppBar(navController) }
     ) { innerPadding ->
-        Text("Setting Screen")
+        val activity = LocalContext.current as MainActivity
+        Column {
+            Text("Setting Screen")
+
+            assetViewModel.savedImagePath?.let {
+                CoilImage(
+                    data = File(assetViewModel.savedImagePath!!),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    loading = {
+                        Box(Modifier.matchParentSize()) {
+                            CircularProgressIndicator(Modifier.align(Alignment.Center))
+                        }
+                    },
+                    fadeIn = true,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .border(1.dp, Color.Black, CircleShape)
+                )
+            }
+
+            Button(
+                onClick = { activity.choosePhotoFromGallery() },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text("Choose from Gallery")
+            }
+
+            Button(
+                onClick = { activity.takePhotoFromCamera() },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text("Take photo from Camera")
+            }
+        }
     }
 }
 

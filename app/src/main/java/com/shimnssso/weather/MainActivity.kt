@@ -46,16 +46,15 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.shimnssso.weather.data.AssetViewModel
 import com.shimnssso.weather.ui.home.HomeScreen
 import com.shimnssso.weather.ui.setting.SettingScreen
 import com.shimnssso.weather.ui.theme.MyTheme
+import com.shimnssso.weather.viewmodels.AssetViewModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
-
 
 class MainActivity : AppCompatActivity() {
     private val assetViewModel by viewModels<AssetViewModel>()
@@ -68,7 +67,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
     /**
      * A method is used for image selection from GALLERY / PHOTOS of phone storage.

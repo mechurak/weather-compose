@@ -15,12 +15,16 @@
  */
 package com.shimnssso.weather.ui.setting
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
@@ -34,17 +38,21 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.shimnssso.weather.MainActivity
-import com.shimnssso.weather.data.AssetViewModel
+import com.shimnssso.weather.R
+import com.shimnssso.weather.viewmodels.AssetViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.io.File
 
@@ -58,39 +66,58 @@ fun SettingScreen(
         topBar = { AppBar(navController) }
     ) { innerPadding ->
         val activity = LocalContext.current as MainActivity
+        val sunnyPhotos by assetViewModel.sunnyPhotos.observeAsState(listOf())
+
         Column {
-            Text("Setting Screen")
-
-            assetViewModel.savedImagePath?.let {
-                CoilImage(
-                    data = File(assetViewModel.savedImagePath!!),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    loading = {
-                        Box(Modifier.matchParentSize()) {
-                            CircularProgressIndicator(Modifier.align(Alignment.Center))
-                        }
-                    },
-                    fadeIn = true,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape)
-                        .border(1.dp, Color.Black, CircleShape)
-                )
-            }
-
-            Button(
-                onClick = { activity.choosePhotoFromGallery() },
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text("Choose from Gallery")
-            }
-
-            Button(
-                onClick = { activity.takePhotoFromCamera() },
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text("Take photo from Camera")
+            Text(text = "size: ${sunnyPhotos.size}")
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                item {
+                    Column {
+                        Image(
+                            painter = painterResource(R.drawable.ic__01_sunny),
+                            contentDescription = "sunny",
+                            modifier = Modifier
+                                .size(60.dp)
+                        )
+                        Text("sunny")
+                    }
+                }
+                // val sunnyPhotos = sunnyPhotosStr.split(",")
+                items(sunnyPhotos) { photo ->
+                    Column {
+                        CoilImage(
+                            data = File(photo.path),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            loading = {
+                                Box(Modifier.matchParentSize()) {
+                                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+                                }
+                            },
+                            fadeIn = true,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, Color.Black, CircleShape)
+                        )
+                    }
+                }
+                item {
+                    Button(
+                        onClick = { activity.choosePhotoFromGallery() },
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Text("Choose from Gallery")
+                    }
+                }
+                item {
+                    Button(
+                        onClick = { activity.takePhotoFromCamera() },
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Text("Take photo from Camera")
+                    }
+                }
             }
         }
     }

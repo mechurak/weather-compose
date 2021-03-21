@@ -64,7 +64,10 @@ class MainActivity : AppCompatActivity() {
         }
         ViewModelProvider(
             this,
-            AssetViewModel.Factory(WeatherDatabase.getInstance(this).photoDao, activity.application)
+            AssetViewModel.Factory(
+                WeatherDatabase.getInstance(this).photoDao,
+                activity.application
+            )
         ).get(AssetViewModel::class.java)
     }
 

@@ -33,11 +33,11 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -46,6 +46,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.shimnssso.weather.database.WeatherDatabase
 import com.shimnssso.weather.ui.home.HomeScreen
 import com.shimnssso.weather.ui.setting.SettingScreen
 import com.shimnssso.weather.ui.theme.MyTheme
@@ -57,13 +58,21 @@ import java.io.OutputStream
 import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
-    private val assetViewModel by viewModels<AssetViewModel>()
+    private val viewModel: AssetViewModel by lazy {
+        val activity = requireNotNull(this) {
+            "You can only access the viewModel after onActivityCreated()"
+        }
+        ViewModelProvider(
+            this,
+            AssetViewModel.Factory(WeatherDatabase.getInstance(this).photoDao, activity.application)
+        ).get(AssetViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyTheme {
-                MyApp(assetViewModel)
+                MyApp()
             }
         }
     }
@@ -217,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         imagePath = saveImageToInternalStorage(bitmap!!)
                         Log.e("Saved Image : ", "Path :: $imagePath")
-                        assetViewModel.onImageSaved(imagePath)
+                        viewModel.onImageSaved(imagePath)
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -237,7 +246,7 @@ class MainActivity : AppCompatActivity() {
 
                 val imagePath = saveImageToInternalStorage(thumbnail)
                 Log.e("Saved Image : ", "Path :: $imagePath")
-                assetViewModel.onImageSaved(imagePath)
+                viewModel.onImageSaved(imagePath)
             }
         }
 
@@ -251,14 +260,13 @@ class MainActivity : AppCompatActivity() {
 
 // Start building your app here!
 @Composable
-fun MyApp(assetViewModel: AssetViewModel) {
+fun MyApp() {
     val navController = rememberNavController()
     NavHost(navController, startDestination = "home") {
         composable("home") { HomeScreen(navController = navController) }
         composable("setting") {
             SettingScreen(
-                navController = navController,
-                assetViewModel = assetViewModel
+                navController = navController
             )
         }
     }
@@ -268,7 +276,7 @@ fun MyApp(assetViewModel: AssetViewModel) {
 @Composable
 fun LightPreview() {
     MyTheme {
-        MyApp(AssetViewModel())
+        MyApp()
     }
 }
 
@@ -276,6 +284,6 @@ fun LightPreview() {
 @Composable
 fun DarkPreview() {
     MyTheme(darkTheme = true) {
-        MyApp(AssetViewModel())
+        MyApp()
     }
 }

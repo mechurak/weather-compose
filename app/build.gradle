@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -85,11 +86,10 @@ dependencies {
     // Runtime permissions (https://github.com/Karumi/Dexter)
     implementation 'com.karumi:dexter:6.2.2'
 
-    // TODO: Make it works
     // Room (https://developer.android.com/jetpack/androidx/releases/room)
-    // implementation "androidx.room:room-runtime:$room_version"
-    // kapt "androidx.room:room-compiler:$room_version"
-    // implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
 
     testImplementation 'junit:junit:4.13.2'
 

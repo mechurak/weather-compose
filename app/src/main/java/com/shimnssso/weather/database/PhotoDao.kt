@@ -15,7 +15,6 @@
  */
 package com.shimnssso.weather.database
 
-/*
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
@@ -37,4 +36,3 @@ interface PhotoDao {
     @Query("DELETE FROM photo_table WHERE photoId = :key")
     suspend fun remove(key: Long)
 }
- */

@@ -48,10 +48,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.shimnssso.weather.MainActivity
 import com.shimnssso.weather.R
+import com.shimnssso.weather.database.WeatherDatabase
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.io.File
@@ -60,16 +62,20 @@ import java.io.File
 fun SettingScreen(
     darkTheme: Boolean = isSystemInDarkTheme(),
     navController: NavController? = null,
-    assetViewModel: AssetViewModel
 ) {
     Scaffold(
         topBar = { AppBar(navController) }
     ) { innerPadding ->
         val activity = LocalContext.current as MainActivity
-        val sunnyPhotos by assetViewModel.sunnyPhotos.observeAsState(listOf())
+
+        val dataSource = WeatherDatabase.getInstance(activity).photoDao
+        val greetingViewModel: AssetViewModel = viewModel(
+            factory = AssetViewModel.Factory(dataSource, activity.application)
+        )
+        val dbSunnyPhotos by greetingViewModel.dbSunnyPhotos.observeAsState(listOf())
 
         Column {
-            Text(text = "size: ${sunnyPhotos.size}")
+            Text(text = "size: ${dbSunnyPhotos.size}")
             LazyRow(modifier = Modifier.fillMaxWidth()) {
                 item {
                     Column {
@@ -83,7 +89,7 @@ fun SettingScreen(
                     }
                 }
                 // val sunnyPhotos = sunnyPhotosStr.split(",")
-                items(sunnyPhotos) { photo ->
+                items(dbSunnyPhotos) { photo ->
                     Column {
                         CoilImage(
                             data = File(photo.path),

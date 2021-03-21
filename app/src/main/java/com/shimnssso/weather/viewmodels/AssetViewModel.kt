@@ -15,23 +15,41 @@
  */
 package com.shimnssso.weather.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.shimnssso.weather.database.Photo
+import com.shimnssso.weather.database.PhotoDao
 import kotlinx.coroutines.launch
 
-class AssetViewModel : ViewModel() {
-    private val _sunnyPhotos = MutableLiveData<List<TempPhoto>>(mutableListOf())
-    val sunnyPhotos: LiveData<List<TempPhoto>> = _sunnyPhotos
-    private val tempSunnyList = mutableListOf<TempPhoto>()
+class AssetViewModel(
+    private val dataSource: PhotoDao,
+    application: Application
+) : AndroidViewModel(application) {
+    val dbSunnyPhotos = dataSource.getPhotos(CATEGORY_WEATHER_SUNNY)
 
     fun onImageSaved(imagePath: String) {
         viewModelScope.launch {
-            val photo = TempPhoto(category = CATEGORY_WEATHER_SUNNY, path = imagePath)
-            tempSunnyList.add(photo)
-            val tempList = tempSunnyList.toMutableList()
-            _sunnyPhotos.value = tempList
+            val photo = Photo(category = CATEGORY_WEATHER_SUNNY, path = imagePath)
+            dataSource.insert(photo)
+        }
+    }
+
+    /**
+     * Factory for constructing DevByteViewModel with parameter
+     */
+    class Factory(
+        private val dataSource: PhotoDao,
+        private val application: Application
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(AssetViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return AssetViewModel(dataSource, application) as T
+            }
+            throw IllegalArgumentException("Unable to construct viewmodel")
         }
     }
 

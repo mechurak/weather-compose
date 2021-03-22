@@ -17,6 +17,7 @@ package com.shimnssso.weather.ui.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -52,7 +54,12 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 import java.io.File
 
 @Composable
-fun CategoryItem(category: String, photos: List<Photo>, onFocus: (String) -> Unit) {
+fun CategoryItem(
+    category: String,
+    photos: List<Photo>,
+    onFocus: (String) -> Unit,
+    onLongPressed: (Photo) -> Unit
+) {
     val activity = LocalContext.current as MainActivity
     val imgRes = AssetViewModel.getImage(category)
 
@@ -112,6 +119,11 @@ fun CategoryItem(category: String, photos: List<Photo>, onFocus: (String) -> Uni
                         .size(60.dp)
                         .clip(CircleShape)
                         .border(1.dp, Color.Black, CircleShape)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = { onLongPressed(photo) },
+                            )
+                        }
                 )
             }
         }

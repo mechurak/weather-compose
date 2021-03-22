@@ -37,6 +37,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -255,6 +256,11 @@ private fun AppBar(navController: NavController?) {
         navigationIcon = {
             IconButton(onClick = { navController!!.navigate("home") }) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = null)
+            }
+        },
+        actions = {
+            IconButton(onClick = { /* TODO: Navigate share screen */ }) {
+                Icon(Icons.Filled.Share, contentDescription = null)
             }
         },
         title = {

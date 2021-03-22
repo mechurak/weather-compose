@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.shimnssso.weather.viewmodels
+package com.shimnssso.weather.utils
 
-data class WeatherDay(
-    val temp: Float,
-    val feelsLike: Float,
-    val tempMin: Float,
-    val tempMax: Float,
-    val weather: String = AssetViewModel.CATEGORY_WEATHER_1_SUNNY,
-    val air: String = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
-    val dt: Long,
-)
+import kotlin.math.roundToInt
 
-data class WeatherHour(
-    val temp: Float,
-    val weather: String = AssetViewModel.CATEGORY_WEATHER_1_SUNNY,
-    val air: String = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
-    val dt: Long,
-)
+object Utils {
+    private const val KELVIN_CELSIUS_DIFF = 273.15f // 0ºC = 273.15K
+    const val ONE_HOUR_IN_SEC = 60 * 60 // 3600
+    const val ONE_DAY_IN_SEC = 60 * 60 * 24 //
+
+    fun getTemp(kelvinTemp: Float, isCelsius: Boolean = true): Int {
+        // TODO: Support fahrenheit as well
+
+        return (kelvinTemp - KELVIN_CELSIUS_DIFF).roundToInt()
+    }
+}

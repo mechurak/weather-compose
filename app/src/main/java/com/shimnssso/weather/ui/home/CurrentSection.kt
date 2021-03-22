@@ -40,22 +40,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.shimnssso.weather.R
 import com.shimnssso.weather.database.Photo
-import com.shimnssso.weather.viewmodels.Weather
+import com.shimnssso.weather.viewmodels.WeatherDay
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
-fun BriefInfo(
-    location: String,
-    weather: Weather,
+fun CurrentSection(
+    weather: WeatherDay,
     weatherPhotoList: List<Photo>,
     airPhotoList: List<Photo>
 ) {
-    Text(location)
-    Text(weather.time.toString())
+    val sdf = SimpleDateFormat("EEE, d MMM HH:mm", Locale.ENGLISH) // Wed, 4 Jul 12:08
+    val date = Date(weather.dt * 1000)
+    Text(
+        text = sdf.format(date),
+        textAlign = TextAlign.End,
+        modifier = Modifier.fillMaxWidth()
+    )
 
     val photoList = (weatherPhotoList + airPhotoList).shuffled()
     var photoIndex by remember { mutableStateOf(0) }

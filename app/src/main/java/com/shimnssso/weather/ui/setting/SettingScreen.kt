@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -195,8 +196,13 @@ fun SettingScreen(
                 CoilImage(
                     data = File(currentPhoto.value!!.path),
                     contentDescription = null,
-                    fadeIn = true,
                     contentScale = ContentScale.Crop,
+                    loading = {
+                        Box(Modifier.matchParentSize()) {
+                            CircularProgressIndicator(Modifier.align(Alignment.Center))
+                        }
+                    },
+                    fadeIn = true,
                     modifier = Modifier
                         .padding(top = 40.dp)
                         .size(150.dp)

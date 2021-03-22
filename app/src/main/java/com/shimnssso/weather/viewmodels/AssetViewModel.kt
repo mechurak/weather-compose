@@ -94,10 +94,10 @@ class AssetViewModel(
     }
 
     companion object {
-        const val CATEGORY_WEATHER_1_SUNNY = "sunny"
-        const val CATEGORY_WEATHER_2_CLOUDY = "cloudy"
-        const val CATEGORY_WEATHER_3_RAINY = "rainy"
-        const val CATEGORY_WEATHER_4_SNOWY = "snowy"
+        const val CATEGORY_WEATHER_1_SUNNY = "weather_sunny"
+        const val CATEGORY_WEATHER_2_CLOUDY = "weather_cloudy"
+        const val CATEGORY_WEATHER_3_RAINY = "weather_rainy"
+        const val CATEGORY_WEATHER_4_SNOWY = "weather_snowy"
         const val CATEGORY_AIR_1_VERY_GOOD = "air_very_good"
         const val CATEGORY_AIR_2_FAIR = "air_fair"
         const val CATEGORY_AIR_3_MODERATE = "air_moderate"

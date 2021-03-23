@@ -16,7 +16,6 @@
 package com.shimnssso.weather.ui.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,7 +51,6 @@ import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun HomeScreen(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     navController: NavController? = null
 ) {
     val activity = LocalContext.current as MainActivity

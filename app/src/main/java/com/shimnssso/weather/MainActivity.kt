@@ -223,8 +223,8 @@ class MainActivity : AppCompatActivity() {
                 val selectedPhotoUri = intent!!.data
                 try {
                     selectedPhotoUri?.let {
-                        var bitmap: Bitmap? = null
-                        var imagePath: String? = null
+                        val bitmap: Bitmap?
+                        val imagePath: String?
                         if (Build.VERSION.SDK_INT < 28) {
                             bitmap = MediaStore.Images.Media.getBitmap(
                                 this.contentResolver,

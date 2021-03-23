@@ -17,7 +17,6 @@ package com.shimnssso.weather.ui.setting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -68,7 +67,6 @@ import java.io.File
 
 @Composable
 fun SettingScreen(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     navController: NavController? = null,
 ) {
     Column {
@@ -81,7 +79,7 @@ fun SettingScreen(
         Scaffold(
             topBar = { AppBar(navController) },
             modifier = Modifier.navigationBarsPadding()
-        ) { innerPadding ->
+        ) {
             val activity = LocalContext.current as MainActivity
 
             val dataSource = WeatherDatabase.getInstance(activity).photoDao

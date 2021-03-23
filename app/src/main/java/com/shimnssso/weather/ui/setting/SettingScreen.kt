@@ -15,10 +15,12 @@
  */
 package com.shimnssso.weather.ui.setting
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -59,6 +61,9 @@ import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.database.WeatherDatabase
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import java.io.File
 
 @Composable
@@ -66,188 +71,198 @@ fun SettingScreen(
     darkTheme: Boolean = isSystemInDarkTheme(),
     navController: NavController? = null,
 ) {
-    Scaffold(
-        topBar = { AppBar(navController) }
-    ) { innerPadding ->
-        val activity = LocalContext.current as MainActivity
-
-        val dataSource = WeatherDatabase.getInstance(activity).photoDao
-        val assetViewModel: AssetViewModel = viewModel(
-            factory = AssetViewModel.Factory(dataSource, activity.application)
+    Column {
+        Spacer(
+            Modifier
+                .background(MaterialTheme.colors.primaryVariant)
+                .statusBarsHeight() // Match the height of the status bar
+                .fillMaxWidth()
         )
-        val sunnyPhotos by assetViewModel.sunnyPhotos.observeAsState(listOf())
-        val cloudyPhotos by assetViewModel.cloudyPhotos.observeAsState(listOf())
-        val rainyPhotos by assetViewModel.rainyPhotos.observeAsState(listOf())
-        val snowyPhotos by assetViewModel.snowyPhotos.observeAsState(listOf())
+        Scaffold(
+            topBar = { AppBar(navController) },
+            modifier = Modifier.navigationBarsPadding()
+        ) { innerPadding ->
+            val activity = LocalContext.current as MainActivity
 
-        val airVeryGoodPhotos by assetViewModel.airVeryGoodPhotos.observeAsState(listOf())
-        val airFairPhotos by assetViewModel.airFairPhotos.observeAsState(listOf())
-        val airModeratePhotos by assetViewModel.airModeratePhotos.observeAsState(listOf())
-        val airPoorPhotos by assetViewModel.airPoorPhotos.observeAsState(listOf())
-        val airVeryPoorPhotos by assetViewModel.airVeryPoorPhotos.observeAsState(listOf())
-
-        val currentPhoto = remember { mutableStateOf<Photo?>(null) }
-        val openDialog = remember { mutableStateOf(false) }
-
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            Header(title = "Weather")
-
-            CategoryItem(
-                category = AssetViewModel.CATEGORY_WEATHER_1_SUNNY,
-                photos = sunnyPhotos,
-                onFocus = { assetViewModel.changeCurCategory(it) },
-                onLongPressed = {
-                    currentPhoto.value = it
-                    openDialog.value = true
-                }
+            val dataSource = WeatherDatabase.getInstance(activity).photoDao
+            val assetViewModel: AssetViewModel = viewModel(
+                factory = AssetViewModel.Factory(dataSource, activity.application)
             )
-            Divider()
+            val sunnyPhotos by assetViewModel.sunnyPhotos.observeAsState(listOf())
+            val cloudyPhotos by assetViewModel.cloudyPhotos.observeAsState(listOf())
+            val rainyPhotos by assetViewModel.rainyPhotos.observeAsState(listOf())
+            val snowyPhotos by assetViewModel.snowyPhotos.observeAsState(listOf())
 
-            CategoryItem(
-                category = AssetViewModel.CATEGORY_WEATHER_2_CLOUDY,
-                photos = cloudyPhotos,
-                onFocus = { assetViewModel.changeCurCategory(it) },
-                onLongPressed = {
-                    currentPhoto.value = it
-                    openDialog.value = true
-                }
-            )
-            Divider()
+            val airVeryGoodPhotos by assetViewModel.airVeryGoodPhotos.observeAsState(listOf())
+            val airFairPhotos by assetViewModel.airFairPhotos.observeAsState(listOf())
+            val airModeratePhotos by assetViewModel.airModeratePhotos.observeAsState(listOf())
+            val airPoorPhotos by assetViewModel.airPoorPhotos.observeAsState(listOf())
+            val airVeryPoorPhotos by assetViewModel.airVeryPoorPhotos.observeAsState(listOf())
 
-            CategoryItem(
-                category = AssetViewModel.CATEGORY_WEATHER_3_RAINY,
-                photos = rainyPhotos,
-                onFocus = { assetViewModel.changeCurCategory(it) },
-                onLongPressed = {
-                    currentPhoto.value = it
-                    openDialog.value = true
-                }
-            )
-            Divider()
+            val currentPhoto = remember { mutableStateOf<Photo?>(null) }
+            val openDialog = remember { mutableStateOf(false) }
 
-            CategoryItem(
-                category = AssetViewModel.CATEGORY_WEATHER_4_SNOWY,
-                photos = snowyPhotos,
-                onFocus = { assetViewModel.changeCurCategory(it) },
-                onLongPressed = {
-                    currentPhoto.value = it
-                    openDialog.value = true
-                }
-            )
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                Header(title = "Weather")
 
-            Header(title = "Air Pollution")
+                CategoryItem(
+                    category = AssetViewModel.CATEGORY_WEATHER_1_SUNNY,
+                    photos = sunnyPhotos,
+                    onFocus = { assetViewModel.changeCurCategory(it) },
+                    onLongPressed = {
+                        currentPhoto.value = it
+                        openDialog.value = true
+                    }
+                )
+                Divider()
 
-            CategoryItem(
-                category = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
-                photos = airVeryGoodPhotos,
-                onFocus = { assetViewModel.changeCurCategory(it) },
-                onLongPressed = {
-                    currentPhoto.value = it
-                    openDialog.value = true
-                }
-            )
-            Divider()
+                CategoryItem(
+                    category = AssetViewModel.CATEGORY_WEATHER_2_CLOUDY,
+                    photos = cloudyPhotos,
+                    onFocus = { assetViewModel.changeCurCategory(it) },
+                    onLongPressed = {
+                        currentPhoto.value = it
+                        openDialog.value = true
+                    }
+                )
+                Divider()
 
-            CategoryItem(
-                category = AssetViewModel.CATEGORY_AIR_2_FAIR,
-                photos = airFairPhotos,
-                onFocus = { assetViewModel.changeCurCategory(it) },
-                onLongPressed = {
-                    currentPhoto.value = it
-                    openDialog.value = true
-                }
-            )
-            Divider()
+                CategoryItem(
+                    category = AssetViewModel.CATEGORY_WEATHER_3_RAINY,
+                    photos = rainyPhotos,
+                    onFocus = { assetViewModel.changeCurCategory(it) },
+                    onLongPressed = {
+                        currentPhoto.value = it
+                        openDialog.value = true
+                    }
+                )
+                Divider()
 
-            CategoryItem(
-                category = AssetViewModel.CATEGORY_AIR_3_MODERATE,
-                photos = airModeratePhotos,
-                onFocus = { assetViewModel.changeCurCategory(it) },
-                onLongPressed = {
-                    currentPhoto.value = it
-                    openDialog.value = true
-                }
-            )
-            Divider()
+                CategoryItem(
+                    category = AssetViewModel.CATEGORY_WEATHER_4_SNOWY,
+                    photos = snowyPhotos,
+                    onFocus = { assetViewModel.changeCurCategory(it) },
+                    onLongPressed = {
+                        currentPhoto.value = it
+                        openDialog.value = true
+                    }
+                )
 
-            CategoryItem(
-                category = AssetViewModel.CATEGORY_AIR_4_POOR,
-                photos = airPoorPhotos,
-                onFocus = { assetViewModel.changeCurCategory(it) },
-                onLongPressed = {
-                    currentPhoto.value = it
-                    openDialog.value = true
-                }
-            )
-            Divider()
+                Header(title = "Air Pollution")
 
-            CategoryItem(
-                category = AssetViewModel.CATEGORY_AIR_5_VERY_POOR,
-                photos = airVeryPoorPhotos,
-                onFocus = { assetViewModel.changeCurCategory(it) },
-                onLongPressed = {
-                    currentPhoto.value = it
-                    openDialog.value = true
-                }
-            )
-        }
+                CategoryItem(
+                    category = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
+                    photos = airVeryGoodPhotos,
+                    onFocus = { assetViewModel.changeCurCategory(it) },
+                    onLongPressed = {
+                        currentPhoto.value = it
+                        openDialog.value = true
+                    }
+                )
+                Divider()
 
-        if (openDialog.value) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                CoilImage(
-                    data = File(currentPhoto.value!!.path),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    loading = {
-                        Box(Modifier.matchParentSize()) {
-                            CircularProgressIndicator(Modifier.align(Alignment.Center))
-                        }
-                    },
-                    fadeIn = true,
-                    modifier = Modifier
-                        .padding(top = 40.dp)
-                        .size(150.dp)
-                        .clip(CircleShape)
-                        .border(5.dp, Color.Black, CircleShape)
-                        .align(Alignment.Center)
+                CategoryItem(
+                    category = AssetViewModel.CATEGORY_AIR_2_FAIR,
+                    photos = airFairPhotos,
+                    onFocus = { assetViewModel.changeCurCategory(it) },
+                    onLongPressed = {
+                        currentPhoto.value = it
+                        openDialog.value = true
+                    }
+                )
+                Divider()
+
+                CategoryItem(
+                    category = AssetViewModel.CATEGORY_AIR_3_MODERATE,
+                    photos = airModeratePhotos,
+                    onFocus = { assetViewModel.changeCurCategory(it) },
+                    onLongPressed = {
+                        currentPhoto.value = it
+                        openDialog.value = true
+                    }
+                )
+                Divider()
+
+                CategoryItem(
+                    category = AssetViewModel.CATEGORY_AIR_4_POOR,
+                    photos = airPoorPhotos,
+                    onFocus = { assetViewModel.changeCurCategory(it) },
+                    onLongPressed = {
+                        currentPhoto.value = it
+                        openDialog.value = true
+                    }
+                )
+                Divider()
+
+                CategoryItem(
+                    category = AssetViewModel.CATEGORY_AIR_5_VERY_POOR,
+                    photos = airVeryPoorPhotos,
+                    onFocus = { assetViewModel.changeCurCategory(it) },
+                    onLongPressed = {
+                        currentPhoto.value = it
+                        openDialog.value = true
+                    }
                 )
             }
 
-            AlertDialog(
-                onDismissRequest = {
-                    // Dismiss the dialog when the user clicks outside the dialog or on the back
-                    // button. If you want to disable that functionality, simply use an empty
-                    // onCloseRequest.
-                    openDialog.value = false
-                },
-                // title = {
-                //     Text(text = "Remove the image")
-                // },
-                text = {
-                    Text("Are you sure to remove the image from '${currentPhoto.value!!.category}' category?")
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            assetViewModel.removeImage(currentPhoto.value!!)
-                            openDialog.value = false
-                        }
-                    ) {
-                        Text("Remove")
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            openDialog.value = false
-                        }
-                    ) {
-                        Text("Cancel")
-                    }
+            if (openDialog.value) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    CoilImage(
+                        data = File(currentPhoto.value!!.path),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        loading = {
+                            Box(Modifier.matchParentSize()) {
+                                CircularProgressIndicator(Modifier.align(Alignment.Center))
+                            }
+                        },
+                        fadeIn = true,
+                        modifier = Modifier
+                            .padding(top = 40.dp)
+                            .size(150.dp)
+                            .clip(CircleShape)
+                            .border(5.dp, Color.Black, CircleShape)
+                            .align(Alignment.Center)
+                    )
                 }
-            )
+
+                AlertDialog(
+                    onDismissRequest = {
+                        // Dismiss the dialog when the user clicks outside the dialog or on the back
+                        // button. If you want to disable that functionality, simply use an empty
+                        // onCloseRequest.
+                        openDialog.value = false
+                    },
+                    // title = {
+                    //     Text(text = "Remove the image")
+                    // },
+                    text = {
+                        Text("Are you sure to remove the image from '${currentPhoto.value!!.category}' category?")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                assetViewModel.removeImage(currentPhoto.value!!)
+                                openDialog.value = false
+                            }
+                        ) {
+                            Text("Remove")
+                        }
+                    },
+                    dismissButton = {
+                        Button(
+                            onClick = {
+                                openDialog.value = false
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
         }
     }
+
 }
 
 @Composable

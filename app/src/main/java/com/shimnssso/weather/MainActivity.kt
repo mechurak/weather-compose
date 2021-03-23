@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -37,6 +38,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -50,7 +52,9 @@ import com.shimnssso.weather.database.WeatherDatabase
 import com.shimnssso.weather.ui.home.HomeScreen
 import com.shimnssso.weather.ui.setting.SettingScreen
 import com.shimnssso.weather.ui.theme.MyTheme
+import com.shimnssso.weather.ui.theme.lightGreen700
 import com.shimnssso.weather.viewmodels.AssetViewModel
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -73,9 +77,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT  // TODO: Is it proper way?
         setContent {
             MyTheme {
-                MyApp()
+                ProvideWindowInsets {
+                    MyApp()
+                }
             }
         }
     }

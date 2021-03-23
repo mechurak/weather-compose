@@ -66,7 +66,7 @@ fun HomeScreen(
     val location by weatherViewModel.currentLocation.observeAsState("no location")
     val todayWeather by weatherViewModel.currentWeather.observeAsState(FakeData.current)
     val weatherPhotoList by weatherViewModel.weatherPhotoList.observeAsState(listOf())
-    val airPhotoList by weatherViewModel.weatherPhotoList.observeAsState(listOf())
+    val airPhotoList by weatherViewModel.airPhotoList.observeAsState(listOf())
 
     val hourlyWeather by weatherViewModel.hourlyWeather.observeAsState(FakeData.hourly)
     val dayliyWeather by weatherViewModel.dailyWeather.observeAsState(FakeData.daily)

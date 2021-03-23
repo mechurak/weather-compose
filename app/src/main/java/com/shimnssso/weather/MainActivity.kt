@@ -52,7 +52,6 @@ import com.shimnssso.weather.database.WeatherDatabase
 import com.shimnssso.weather.ui.home.HomeScreen
 import com.shimnssso.weather.ui.setting.SettingScreen
 import com.shimnssso.weather.ui.theme.MyTheme
-import com.shimnssso.weather.ui.theme.lightGreen700
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import java.io.File
@@ -79,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.TRANSPARENT  // TODO: Is it proper way?
+        window.statusBarColor = Color.TRANSPARENT // TODO: Is it proper way?
         setContent {
             MyTheme {
                 ProvideWindowInsets {

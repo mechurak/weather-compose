@@ -63,7 +63,6 @@ import com.shimnssso.weather.viewmodels.AssetViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import java.io.File
 
 @Composable
@@ -262,7 +261,6 @@ fun SettingScreen(
             }
         }
     }
-
 }
 
 @Composable

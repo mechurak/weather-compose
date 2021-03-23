@@ -63,8 +63,10 @@ fun CurrentSection(
 ) {
     val sdf = SimpleDateFormat("EEE, d MMM HH:mm", Locale.ENGLISH) // Wed, 4 Jul 12:08
     val date = Date(weather.dt * 1000)
-    val photoList = (weatherPhotoList + airPhotoList).shuffled()
+    val photoList =
+        remember(weatherPhotoList, airPhotoList) { (weatherPhotoList + airPhotoList).shuffled() }
     var photoIndex by remember { mutableStateOf(0) }
+    val isWeather = !photoList.isEmpty() && photoList[photoIndex].category.startsWith("weather_")
 
     val bottomPadding: Dp by animateDpAsState(
         targetValue = 30.dp,
@@ -72,9 +74,7 @@ fun CurrentSection(
         animationSpec = infiniteRepeatable(
             animation = keyframes {
                 durationMillis = 500
-                0.dp at 0 with FastOutSlowInEasing // for 0-15 ms
-                // 60.dp at 500 with FastOutSlowInEasing // for 15-75 ms
-                // 0.dp at 1000 // ms
+                0.dp at 0 with FastOutSlowInEasing
             },
             repeatMode = RepeatMode.Reverse
         )
@@ -86,9 +86,21 @@ fun CurrentSection(
         animationSpec = infiniteRepeatable(
             animation = keyframes {
                 durationMillis = 500
-                60.dp at 0 with FastOutSlowInEasing // for 0-15 ms
+                60.dp at 0 with FastOutSlowInEasing
                 80.dp at 250
-                // 0.dp at 1000 // ms
+            },
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    val airHeight: Dp by animateDpAsState(
+        targetValue = 60.dp,
+        // configure the animation duration and easing
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 500
+                40.dp at 0 with FastOutSlowInEasing
+                60.dp at 250
             },
             repeatMode = RepeatMode.Reverse
         )
@@ -122,12 +134,6 @@ fun CurrentSection(
                 data = File(photoList[photoIndex].path),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                loading = {
-                    Box(Modifier.matchParentSize()) {
-                        CircularProgressIndicator(Modifier.align(Alignment.Center))
-                    }
-                },
-                fadeIn = true,
                 modifier = Modifier
                     .size(250.dp)
                     .clip(CircleShape)
@@ -147,23 +153,29 @@ fun CurrentSection(
             contentDescription = weather.weather,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
-                .padding(bottom = bottomPadding)
+                .padding(bottom = if (isWeather) bottomPadding else 0.dp)
                 .width(80.dp)
-                .height(weatherHeight)
+                .height(if (isWeather) weatherHeight else 80.dp)
                 .align(Alignment.BottomStart)
         )
 
         CoilImage(
             data = AssetViewModel.getImage(weather.air),
             contentDescription = weather.air,
+            contentScale = ContentScale.FillBounds,
             modifier = Modifier
-                .padding(start = 60.dp)
-                .size(60.dp)
+                .padding(
+                    start = 60.dp,
+                    bottom = if (isWeather && !photoList.isEmpty()) 0.dp else bottomPadding
+                )
+                .width(60.dp)
+                .height(if (isWeather && !photoList.isEmpty()) 60.dp else airHeight)
                 .align(Alignment.BottomCenter)
         )
 
         Text(
-            location, modifier = Modifier
+            location,
+            modifier = Modifier
                 .align(Alignment.TopStart)
         )
 

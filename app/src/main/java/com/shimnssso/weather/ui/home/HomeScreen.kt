@@ -17,7 +17,6 @@ package com.shimnssso.weather.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,26 +26,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,7 +50,6 @@ import com.shimnssso.weather.viewmodels.FakeData
 import com.shimnssso.weather.viewmodels.WeatherViewModel
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 @Composable
 fun HomeScreen(
@@ -142,27 +133,4 @@ fun HomeScreen(
             Text("designed by Baianat from Flaticon") // https://www.flaticon.com/packs/color-emotions-assets
         }
     }
-}
-
-@Composable
-private fun AppBar(navController: NavController?, location: String) {
-    TopAppBar(
-        navigationIcon = {
-            IconButton(onClick = { navController!!.navigate("setting") }) {
-                Icon(Icons.Filled.Menu, contentDescription = null)
-            }
-        },
-        actions = {
-            IconButton(onClick = { navController!!.navigate("setting") }) {
-                Icon(Icons.Filled.Settings, contentDescription = null)
-            }
-            IconButton(onClick = { /* TODO: Refresh weather data */ }) {
-                Icon(Icons.Filled.Refresh, contentDescription = null)
-            }
-        },
-        title = {
-            Text(text = location)
-        },
-        backgroundColor = MaterialTheme.colors.primarySurface
-    )
 }

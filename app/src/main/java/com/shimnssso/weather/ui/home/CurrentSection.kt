@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.shimnssso.weather.R
 import com.shimnssso.weather.database.Photo
+import com.shimnssso.weather.utils.Utils
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import com.shimnssso.weather.viewmodels.WeatherDay
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -134,6 +136,12 @@ fun CurrentSection(
                 data = File(photoList[photoIndex].path),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
+                loading = {
+                    Box(Modifier.matchParentSize()) {
+                        CircularProgressIndicator(Modifier.align(Alignment.Center))
+                    }
+                },
+                fadeIn = true,
                 modifier = Modifier
                     .size(250.dp)
                     .clip(CircleShape)
@@ -175,22 +183,58 @@ fun CurrentSection(
 
         Text(
             location,
+            style = MaterialTheme.typography.h2,
+            color = MaterialTheme.colors.onPrimary,
             modifier = Modifier
                 .align(Alignment.TopStart)
         )
 
         Text(
             text = sdf.format(date),
+            style = MaterialTheme.typography.caption,
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 40.dp)
         )
 
-        Column(modifier = Modifier.align(Alignment.CenterEnd)) {
-            Text("16º")
-            Text("18º/3º")
-            Text("Sunny")
-            Text("Very Good")
+        val temperature = Utils.getTemp(weather.temp)
+        val maxTemperature = Utils.getTemp(weather.tempMax)
+        val minTemperature = Utils.getTemp(weather.tempMin)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.align(Alignment.BottomEnd)
+        ) {
+            Text(
+                "${temperature}º",
+                style = MaterialTheme.typography.h1,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Text(
+                "${maxTemperature}º/${minTemperature}º",
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onPrimary,
+            )
+            Text(
+                "weather",
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Text(
+                weather.weather.substring(8).capitalize(Locale.ROOT),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onPrimary,
+            ) // TODO: Add description
+            Text(
+                "air",
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Text(
+                weather.air.substring(4).capitalize(Locale.ROOT),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onPrimary,
+            )
         }
     }
 }

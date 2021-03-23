@@ -15,18 +15,35 @@
  */
 package com.shimnssso.weather.ui.setting
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Header(title: String) {
-    Card(modifier = Modifier.fillMaxWidth(), backgroundColor = Color.LightGray) {
-        Text(text = title, Modifier.padding(8.dp))
+fun Header(title: String, description: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        backgroundColor = Color.LightGray,
+        shape = MaterialTheme.shapes.large
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = title,
+                modifier = Modifier.padding(8.dp),
+            )
+
+            Text(
+                text = description,
+                style = MaterialTheme.typography.caption,
+            )
+        }
     }
 }

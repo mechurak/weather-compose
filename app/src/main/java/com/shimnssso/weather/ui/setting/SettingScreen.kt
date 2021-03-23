@@ -39,6 +39,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.GetApp
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
@@ -102,7 +103,10 @@ fun SettingScreen(
             val openDialog = remember { mutableStateOf(false) }
 
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Header(title = "Weather")
+                Header(
+                    title = "Weather",
+                    description = "(designed by Freepik from Flaticon)"
+                ) // https://www.flaticon.com/packs/weather-255
 
                 CategoryItem(
                     category = AssetViewModel.CATEGORY_WEATHER_1_SUNNY,
@@ -147,7 +151,10 @@ fun SettingScreen(
                     }
                 )
 
-                Header(title = "Air Pollution")
+                Header(
+                    title = "Air Pollution",
+                    description = "(designed by Baianat from Flaticon)"
+                ) // https://www.flaticon.com/packs/color-emotions-assets                Text("designed by Baianat from Flaticon")
 
                 CategoryItem(
                     category = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
@@ -272,7 +279,10 @@ private fun AppBar(navController: NavController?) {
             }
         },
         actions = {
-            IconButton(onClick = { /* TODO: Navigate share screen */ }) {
+            IconButton(onClick = { /* TODO: Navigate to import screen */ }) {
+                Icon(Icons.Filled.GetApp, contentDescription = null)
+            }
+            IconButton(onClick = { /* TODO: Navigate to share screen */ }) {
                 Icon(Icons.Filled.Share, contentDescription = null)
             }
         },

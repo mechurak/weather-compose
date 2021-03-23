@@ -30,7 +30,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -129,8 +128,6 @@ fun HomeScreen(
 
             DailySection(weatherList = dayliyWeather)
             Divider(Modifier.padding(vertical = 12.dp))
-            Text("designed by Freepik from Flaticon") // https://www.flaticon.com/packs/weather-255
-            Text("designed by Baianat from Flaticon") // https://www.flaticon.com/packs/color-emotions-assets
         }
     }
 }

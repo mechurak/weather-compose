@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddAPhoto
@@ -38,6 +39,7 @@ import androidx.compose.material.icons.outlined.AddPhotoAlternate
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -82,7 +84,12 @@ fun CategoryItem(
                     modifier = Modifier
                         .size(40.dp)
                 )
-                Text(category, textAlign = TextAlign.Center)
+                val isWeather = category.startsWith("weather_")
+                Text(
+                    if (isWeather) category.substring(8) else category.substring(4),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.caption
+                )
             }
         }
         if (photos.isEmpty()) {
@@ -101,6 +108,7 @@ fun CategoryItem(
                         .size(60.dp)
                         .clip(CircleShape)
                         .border(1.dp, Color.Black, CircleShape)
+                        .alpha(0.5f)
                 )
             }
         } else {

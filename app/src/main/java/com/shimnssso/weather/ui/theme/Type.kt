@@ -17,27 +17,47 @@ package com.shimnssso.weather.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.shimnssso.weather.R
+
+private val Jua = FontFamily(
+    Font(R.font.jua_regular, FontWeight.W400),
+)
 
 // Set of Material typography styles to start with
 val typography = Typography(
+    h1 = TextStyle(
+        fontFamily = Jua,
+        fontWeight = FontWeight.W400,
+        fontSize = 28.sp,
+    ),
+    h2 = TextStyle(
+        fontFamily = Jua,
+        fontWeight = FontWeight.W400,
+        fontSize = 22.sp,
+    ),
+    h3 = TextStyle(
+        fontFamily = Jua,
+        fontWeight = FontWeight.W400,
+        fontSize = 10.sp,
+    ),
     body1 = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    )
-        /* Other default text styles to override
+        fontFamily = Jua,
+        fontWeight = FontWeight.W400,
+        fontSize = 14.sp,
+    ),
     button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+        fontFamily = Jua,
+        fontWeight = FontWeight.W400,
+        fontSize = 14.sp,
+        letterSpacing = 1.15.sp
     ),
     caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontFamily = Jua,
+        fontWeight = FontWeight.W400,
+        fontSize = 12.sp,
     )
-    */
 )

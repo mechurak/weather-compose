@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.navigate
 import com.shimnssso.weather.R
 import com.shimnssso.weather.database.Photo
+import com.shimnssso.weather.viewmodels.AssetViewModel
 import com.shimnssso.weather.viewmodels.WeatherDay
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
@@ -60,18 +62,13 @@ import java.util.Locale
 
 @Composable
 fun CurrentSection(
+    location: String,
     weather: WeatherDay,
     weatherPhotoList: List<Photo>,
     airPhotoList: List<Photo>
 ) {
     val sdf = SimpleDateFormat("EEE, d MMM HH:mm", Locale.ENGLISH) // Wed, 4 Jul 12:08
     val date = Date(weather.dt * 1000)
-    Text(
-        text = sdf.format(date),
-        textAlign = TextAlign.End,
-        modifier = Modifier.fillMaxWidth()
-    )
-
     val photoList = (weatherPhotoList + airPhotoList).shuffled()
     var photoIndex by remember { mutableStateOf(0) }
 
@@ -82,8 +79,9 @@ fun CurrentSection(
     ) {
         Box(
             modifier = Modifier
-                .width(240.dp)
-                .height(200.dp)
+                .padding(vertical = 16.dp, horizontal = 8.dp)
+                .height(250.dp)
+                .fillMaxWidth()
         ) {
             if (photoList.isEmpty()) {
                 CoilImage(
@@ -97,10 +95,10 @@ fun CurrentSection(
                     },
                     fadeIn = true,
                     modifier = Modifier
-                        .size(200.dp)
+                        .size(250.dp)
                         .clip(CircleShape)
                         .border(2.dp, Color.Black, CircleShape)
-                        .align(Alignment.Center)
+                        .align(Alignment.CenterStart)
                 )
             } else {
                 CoilImage(
@@ -114,10 +112,10 @@ fun CurrentSection(
                     },
                     fadeIn = true,
                     modifier = Modifier
-                        .size(200.dp)
+                        .size(250.dp)
                         .clip(CircleShape)
                         .border(2.dp, Color.Black, CircleShape)
-                        .align(Alignment.Center)
+                        .align(Alignment.CenterStart)
                         .clickable {
                             photoIndex++
                             if (photoIndex >= photoList.size) {
@@ -127,26 +125,41 @@ fun CurrentSection(
                 )
             }
 
-            Image(
-                painter = painterResource(R.drawable.ic__01_sunny),
-                contentDescription = "sunny",
+            CoilImage(
+                data = AssetViewModel.getImage(weather.weather),
+                contentDescription = weather.weather,
                 modifier = Modifier
                     .size(80.dp)
                     .align(Alignment.BottomStart)
             )
-            Image(
-                painter = painterResource(R.drawable.air_1_very_good_28_happy),
-                contentDescription = "very_good",
+
+            CoilImage(
+                data = AssetViewModel.getImage(weather.air),
+                contentDescription = weather.air,
                 modifier = Modifier
+                    .padding(start = 60.dp)
                     .size(60.dp)
-                    .align(Alignment.BottomEnd)
+                    .align(Alignment.BottomCenter)
             )
-        }
-        Column {
-            Text("16º")
-            Text("18º/3º")
-            Text("Sunny")
-            Text("Very Good")
+
+            Text(
+                location, modifier = Modifier
+                    .align(Alignment.TopStart)
+            )
+
+            Text(
+                text = sdf.format(date),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 40.dp)
+            )
+
+            Column(modifier = Modifier.align(Alignment.CenterEnd)) {
+                Text("16º")
+                Text("18º/3º")
+                Text("Sunny")
+                Text("Very Good")
+            }
         }
     }
 }

@@ -18,10 +18,12 @@ package com.shimnssso.weather.ui.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -88,33 +90,42 @@ fun HomeScreen(
                 .fillMaxWidth()
         )
 
-        Column(
+        Box(
             modifier = Modifier
                 .background(MaterialTheme.colors.primary)
-                .padding(bottom = 16.dp, start = 8.dp, end = 8.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .height(60.dp)
+                    .align(Alignment.TopEnd)
             ) {
-                Text(location)
-                Row {
-                    IconButton(onClick = { navController!!.navigate("setting") }) {
-                        Icon(Icons.Filled.Settings, contentDescription = null)
-                    }
-                    IconButton(onClick = { /* TODO: Refresh weather data */ }) {
-                        Icon(Icons.Filled.Refresh, contentDescription = null)
-                    }
+                IconButton(onClick = { navController!!.navigate("setting") }) {
+                    Icon(
+                        Icons.Filled.Settings,
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.onPrimary
+                    )
+                }
+                IconButton(onClick = { /* TODO: Refresh weather data */ }) {
+                    Icon(
+                        Icons.Filled.Refresh,
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.onPrimary
+                    )
                 }
             }
             CurrentSection(
+                location = location,
                 weather = todayWeather,
                 weatherPhotoList = weatherPhotoList,
                 airPhotoList = airPhotoList
             )
         }
+        Divider(
+            color = MaterialTheme.colors.primaryVariant,
+            thickness = 2.dp
+        )
 
         Column(
             modifier = Modifier

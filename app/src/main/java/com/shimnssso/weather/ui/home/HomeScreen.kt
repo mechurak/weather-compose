@@ -29,6 +29,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -68,6 +69,8 @@ fun HomeScreen(
     val hourlyWeather by weatherViewModel.hourlyWeather.observeAsState(FakeData.hourly)
     val dayliyWeather by weatherViewModel.dailyWeather.observeAsState(FakeData.daily)
 
+    val curWeather by weatherViewModel.curWeather.observeAsState()
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -95,7 +98,11 @@ fun HomeScreen(
                         tint = MaterialTheme.colors.onPrimary
                     )
                 }
-                IconButton(onClick = { /* TODO: Refresh weather data */ }) {
+                IconButton(
+                    onClick = {
+                        weatherViewModel.refreshDataFromRepository()
+                    }
+                ) {
                     Icon(
                         Icons.Filled.Refresh,
                         contentDescription = null,
@@ -103,12 +110,14 @@ fun HomeScreen(
                     )
                 }
             }
-            CurrentSection(
-                location = location,
-                weather = todayWeather,
-                weatherPhotoList = weatherPhotoList,
-                airPhotoList = airPhotoList
-            )
+            Text(text = curWeather.toString())
+
+            // CurrentSection(
+            //     location = location,
+            //     weather = todayWeather,
+            //     weatherPhotoList = weatherPhotoList,
+            //     airPhotoList = airPhotoList
+            // )
         }
         Divider(
             color = MaterialTheme.colors.primaryVariant,

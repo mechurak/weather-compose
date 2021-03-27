@@ -119,5 +119,15 @@ class AssetViewModel(
                 else -> R.drawable.ella
             }
         }
+
+        fun getWeatherStr(weatherId: Int): String {
+            return when (weatherId) {
+                in 200..599 -> CATEGORY_WEATHER_3_RAINY
+                in 600..699 -> CATEGORY_WEATHER_4_SNOWY
+                in 800..801 -> CATEGORY_WEATHER_1_SUNNY
+                in 802..804 -> CATEGORY_WEATHER_2_CLOUDY
+                else -> CATEGORY_WEATHER_1_SUNNY
+            }
+        }
     }
 }

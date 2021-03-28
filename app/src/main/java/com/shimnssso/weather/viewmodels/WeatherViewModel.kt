@@ -34,13 +34,10 @@ class WeatherViewModel(
     private val dataSource: PhotoDao,
     private val app: Application
 ) : AndroidViewModel(app) {
+
     val currentLocation = MutableLiveData<String>(FakeData.location)
-    val currentWeather = MutableLiveData<WeatherDay>(FakeData.current)
     val hourlyWeather = MutableLiveData<List<WeatherHour>>(FakeData.hourly)
     val dailyWeather = MutableLiveData<List<WeatherDay>>(FakeData.daily)
-
-    val weatherPhotoList = dataSource.getPhotos(currentWeather.value!!.weather)
-    val airPhotoList = dataSource.getPhotos(currentWeather.value!!.air)
 
     /**
      * Event triggered for network error. This is private to avoid exposing a
@@ -73,10 +70,9 @@ class WeatherViewModel(
      */
     private val weatherRepository = WeatherRepository(WeatherDatabase.getInstance(app))
 
-    /**
-     * A playlist of videos displayed on the screen.
-     */
-    val curWeather = weatherRepository.currentWeather
+    val todayWeather = weatherRepository.todayWeather
+    val weatherPhotoList = weatherRepository.weatherPhotoList
+    val airPhotoList = weatherRepository.airPhotoList
 
     /**
      * Refresh data from the repository. Use a coroutine launch to run in a

@@ -18,10 +18,13 @@ package com.shimnssso.weather.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.shimnssso.weather.database.DatabaseWeather
+import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.database.WeatherDatabase
 import com.shimnssso.weather.database.asDomainModel
 import com.shimnssso.weather.network.WeatherNetwork
 import com.shimnssso.weather.network.asDatabaseModel
+import com.shimnssso.weather.viewmodels.FakeData
 import com.shimnssso.weather.viewmodels.WeatherDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -31,9 +34,21 @@ import kotlinx.coroutines.withContext
  */
 class WeatherRepository(private val database: WeatherDatabase) {
 
-    val currentWeather: LiveData<List<WeatherDay>> =
-        Transformations.map(database.weatherDao.getWeathers("current")) {
-            it.asDomainModel()
+    private val _current: LiveData<DatabaseWeather?> = database.weatherDao.getWeather("current")
+
+    val todayWeather: LiveData<WeatherDay> =
+        Transformations.map(_current) {
+            it?.asDomainModel() ?: FakeData.current
+        }
+
+    val weatherPhotoList: LiveData<List<Photo>> =
+        Transformations.switchMap(todayWeather) {
+            database.photoDao.getPhotos(it.weather)
+        }
+
+    val airPhotoList: LiveData<List<Photo>> =
+        Transformations.switchMap(todayWeather) {
+            database.photoDao.getPhotos(it.air)
         }
 
     /**

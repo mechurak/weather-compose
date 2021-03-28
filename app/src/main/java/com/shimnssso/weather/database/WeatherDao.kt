@@ -27,7 +27,7 @@ interface WeatherDao {
     fun getWeathers(type: String): LiveData<List<DatabaseWeather>>
 
     @Query("select * from weather_table where type = :type limit 1")
-    fun getWeather(type: String): LiveData<DatabaseWeather>
+    fun getWeather(type: String): LiveData<DatabaseWeather?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(weathers: List<DatabaseWeather>)

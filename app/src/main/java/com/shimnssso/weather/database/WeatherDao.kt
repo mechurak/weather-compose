@@ -34,4 +34,16 @@ interface WeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(weathers: DatabaseWeather)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertHourlies(hourlyList: List<DatabaseHourly>)
+
+    @Query("select * from hourly_table order by dt asc")
+    fun getHourlies(): LiveData<List<DatabaseHourly>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDailies(hourlyList: List<DatabaseDaily>)
+
+    @Query("select * from daily_table order by dt asc")
+    fun getDailies(): LiveData<List<DatabaseDaily>>
 }

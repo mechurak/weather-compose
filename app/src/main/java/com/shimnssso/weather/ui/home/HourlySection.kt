@@ -17,10 +17,11 @@ package com.shimnssso.weather.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,13 +37,13 @@ import java.util.Locale
 
 @Composable
 fun HourlySection(weatherList: List<WeatherHour>) {
-    Row(
+    LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val sdf = SimpleDateFormat("h a", Locale.ENGLISH) // 12AM
-        weatherList.forEach { weatherHour ->
+        items(weatherList) { weatherHour ->
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 val date = Date(weatherHour.dt * 1000)
                 Text(sdf.format(date), modifier = Modifier.padding(bottom = 8.dp))

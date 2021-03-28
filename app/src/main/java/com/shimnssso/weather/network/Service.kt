@@ -21,20 +21,21 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 /**
- * A retrofit service to fetch a devbyte playlist.
+ * A retrofit service to fetch a weather data.
  */
 interface OpenWeatherMapService {
-    @GET("2.5/weather")
+    @GET("2.5/onecall")
     suspend fun getWeather(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
+        @Query("exclude") exclude: String?,
         @Query("units") units: String?,
         @Query("appid") appid: String?
-    ): WeatherResponse
+    ): OneCallResponse
 }
 
 /**
- * Main entry point for network access. Call like `DevByteNetwork.devbytes.getPlaylist()`
+ * Main entry point for network access. Call like `WeatherNetwork.openWeather.getWeather()`
  */
 object WeatherNetwork {
 

@@ -21,13 +21,21 @@ import androidx.lifecycle.Transformations
 import com.shimnssso.weather.database.DatabaseWeather
 import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.database.WeatherDatabase
+import com.shimnssso.weather.database.asDomainDaily
+import com.shimnssso.weather.database.asDomainHourly
 import com.shimnssso.weather.database.asDomainModel
 import com.shimnssso.weather.network.WeatherNetwork
-import com.shimnssso.weather.network.asDatabaseModel
+import com.shimnssso.weather.network.asCurrentDatabaseModel
+import com.shimnssso.weather.network.asDatabaseDailyList
+import com.shimnssso.weather.network.asDatabaseHourlyList
 import com.shimnssso.weather.viewmodels.FakeData
 import com.shimnssso.weather.viewmodels.WeatherDay
+import com.shimnssso.weather.viewmodels.WeatherHour
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Repository for fetching devbyte videos from the network and storing them on disk
@@ -51,6 +59,14 @@ class WeatherRepository(private val database: WeatherDatabase) {
             database.photoDao.getPhotos(it.air)
         }
 
+    val hourlies: LiveData<List<WeatherHour>> = Transformations.map(database.weatherDao.getHourlies()) {
+        it.asDomainHourly()
+    }
+
+    val dailies: LiveData<List<WeatherDay>> = Transformations.map(database.weatherDao.getDailies()) {
+        it.asDomainDaily()
+    }
+
     /**
      * Refresh the videos stored in the offline cache.
      *
@@ -62,14 +78,33 @@ class WeatherRepository(private val database: WeatherDatabase) {
     suspend fun refreshWeather() {
         withContext(Dispatchers.IO) {
             Log.i("WeatherRepository", "refresh videos is called")
-            val currentWeather = WeatherNetwork.openWeather.getWeather(
+            val oneCallResponse = WeatherNetwork.openWeather.getWeather(
                 lat = 37.32971822303459,
                 lon = 127.11430926761564,
+                exclude = "minutely",
                 units = "metric",
                 appid = "e4b94150e27b4a33b5e5c2b05467a22f"
             )
-            Log.i("WeatherRepository", "currentWeather: $currentWeather")
-            database.weatherDao.insert(currentWeather.asDatabaseModel())
+            Log.i("WeatherRepository", "oneCallResponse: $oneCallResponse")
+
+            val sdf = SimpleDateFormat("EEE, d MMM HH:mm", Locale.ENGLISH) // Wed, 4 Jul 12:08
+            val current = oneCallResponse.current
+            val daily = oneCallResponse.daily
+            val hourly = oneCallResponse.hourly
+
+            Log.i("WeatherRepository", "current: ${sdf.format(Date(current.dt * 1000L))}")
+
+            for ((idx, item) in hourly.withIndex()) {
+                Log.i("WeatherRepository", "hourly[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
+            }
+
+            for ((idx, item) in daily.withIndex()) {
+                Log.i("WeatherRepository", "daily[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
+            }
+
+            database.weatherDao.insert(oneCallResponse.asCurrentDatabaseModel())
+            database.weatherDao.insertHourlies(oneCallResponse.asDatabaseHourlyList())
+            database.weatherDao.insertDailies(oneCallResponse.asDatabaseDailyList())
         }
     }
 }

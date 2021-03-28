@@ -19,6 +19,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import com.shimnssso.weather.viewmodels.WeatherDay
+import com.shimnssso.weather.viewmodels.WeatherHour
 
 @Entity(tableName = "weather_table")
 data class DatabaseWeather(
@@ -37,15 +38,27 @@ data class DatabaseWeather(
     val name: String,
 )
 
-// data class WeatherDay(
-//     val temp: Float,
-//     val feelsLike: Float,
-//     val tempMin: Float,
-//     val tempMax: Float,
-//     val weather: String = AssetViewModel.CATEGORY_WEATHER_1_SUNNY,
-//     val air: String = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
-//     val dt: Long,
-// )
+@Entity(tableName = "hourly_table")
+data class DatabaseHourly(
+    @PrimaryKey
+    val hourIndex: Int,
+    val dt: Int,
+    val weatherId: Int,
+    val temp: Float,
+    val feelsLike: Float,
+)
+
+@Entity(tableName = "daily_table")
+data class DatabaseDaily(
+    @PrimaryKey
+    val dayIndex: Int,
+    val dt: Int,
+    val weatherId: Int,
+    val temp: Float,
+    val feelsLike: Float,
+    val tempMin: Float,
+    val tempMax: Float,
+)
 
 /**
  * Map DatabaseVideos to domain entities
@@ -74,4 +87,29 @@ fun DatabaseWeather.asDomainModel(): WeatherDay {
         air = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
         dt = dt.toLong()
     )
+}
+
+fun List<DatabaseHourly>.asDomainHourly(): List<WeatherHour> {
+    return map {
+        WeatherHour(
+            temp = it.temp,
+            weather = AssetViewModel.getWeatherStr(it.weatherId),
+            air = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
+            dt = it.dt.toLong()
+        )
+    }
+}
+
+fun List<DatabaseDaily>.asDomainDaily(): List<WeatherDay> {
+    return map {
+        WeatherDay(
+            temp = it.temp,
+            feelsLike = it.feelsLike,
+            tempMin = it.tempMin,
+            tempMax = it.tempMax,
+            weather = AssetViewModel.getWeatherStr(it.weatherId),
+            air = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
+            dt = it.dt.toLong()
+        )
+    }
 }

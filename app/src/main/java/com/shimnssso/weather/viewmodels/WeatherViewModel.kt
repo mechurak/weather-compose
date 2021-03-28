@@ -36,8 +36,6 @@ class WeatherViewModel(
 ) : AndroidViewModel(app) {
 
     val currentLocation = MutableLiveData<String>(FakeData.location)
-    val hourlyWeather = MutableLiveData<List<WeatherHour>>(FakeData.hourly)
-    val dailyWeather = MutableLiveData<List<WeatherDay>>(FakeData.daily)
 
     /**
      * Event triggered for network error. This is private to avoid exposing a
@@ -73,6 +71,9 @@ class WeatherViewModel(
     val todayWeather = weatherRepository.todayWeather
     val weatherPhotoList = weatherRepository.weatherPhotoList
     val airPhotoList = weatherRepository.airPhotoList
+
+    val hourlyWeather = weatherRepository.hourlies
+    val dailyWeather = weatherRepository.dailies
 
     /**
      * Refresh data from the repository. Use a coroutine launch to run in a

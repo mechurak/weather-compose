@@ -15,29 +15,39 @@
  */
 package com.shimnssso.weather.network
 
+import com.shimnssso.weather.database.DatabaseDaily
+import com.shimnssso.weather.database.DatabaseHourly
 import com.shimnssso.weather.database.DatabaseWeather
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class WeatherResponse(
-    val coord: Coord,
-    val weather: List<Weather>,
-    val base: String,
-    val main: Main,
-    val visibility: Int,
-    val wind: Wind,
-    val clouds: Clouds,
-    val dt: Int,
-    val sys: Sys,
-    val id: Int,
-    val name: String,
-    val cod: Int
+data class OneCallResponse(
+    val lat: Float,
+    val lon: Float,
+    val timezone: String,
+    val timezone_offset: Int,
+    val current: Current,
+    val hourly: List<Hourly>,
+    val daily: List<Daily>,
+    val alerts: Alerts?,
 )
 
 @JsonClass(generateAdapter = true)
-data class Coord(
-    val lon: Double,
-    val lat: Double
+data class Current(
+    val dt: Int,
+    val sunrise: Int,
+    val sunset: Int,
+    val temp: Float,
+    val feels_like: Float,
+    val pressure: Int,
+    val humidity: Int,
+    val dew_point: Float,
+    val uvi: Int,
+    val clouds: Int,
+    val visibility: Int,
+    val wind_speed: Float,
+    val wind_deg: Int,
+    val weather: List<Weather>,
 )
 
 @JsonClass(generateAdapter = true)
@@ -49,46 +59,118 @@ data class Weather(
 )
 
 @JsonClass(generateAdapter = true)
-data class Main(
+data class Hourly(
+    val dt: Int,
     val temp: Float,
     val feels_like: Float,
     val pressure: Int,
     val humidity: Int,
-    val temp_min: Float,
-    val temp_max: Float
+    val dew_point: Float,
+    val uvi: Float,
+    val clouds: Int,
+    val visibility: Int,
+    val wind_speed: Float,
+    val wind_gust: Float?,
+    val wind_deg: Int,
+    val pop: Float,
+    val weather: List<Weather>,
 )
 
 @JsonClass(generateAdapter = true)
-data class Wind(
-    val speed: Double,
-    val deg: Int
-)
-
-@JsonClass(generateAdapter = true)
-data class Clouds(
-    val all: Int
-)
-
-@JsonClass(generateAdapter = true)
-data class Sys(
-    val type: Int,
-    val country: String,
+data class Daily(
+    val dt: Int,
     val sunrise: Int,
-    val sunset: Int
+    val sunset: Int,
+    val temp: Temp,
+    val feels_like: FeelsLike,
+    val pressure: Int,
+    val humidity: Int,
+    val dew_point: Float,
+    val wind_speed: Float,
+    val wind_gust: Float?,
+    val wind_deg: Int,
+    val clouds: Int,
+    val uvi: Float,
+    val pop: Float,
+    val rain: Float?,
+    val snow: Float?,
+    val weather: List<Weather>,
+)
+
+@JsonClass(generateAdapter = true)
+data class Temp(
+    val morn: Float,
+    val day: Float,
+    val eve: Float,
+    val night: Float,
+    val min: Float,
+    val max: Float
+)
+
+@JsonClass(generateAdapter = true)
+data class FeelsLike(
+    val morn: Float,
+    val day: Float,
+    val eve: Float,
+    val night: Float,
+)
+
+@JsonClass(generateAdapter = true)
+data class Alerts(
+    val sender_name: String,
+    val event: String,
+    val start: Int,
+    val end: Int,
+    val description: String
 )
 
 /**
  * Convert Network results to database objects
  */
-fun WeatherResponse.asDatabaseModel(): DatabaseWeather {
+fun OneCallResponse.asCurrentDatabaseModel(): DatabaseWeather {
     return DatabaseWeather(
         type = "current",
-        weatherId = weather[0].id,
-        temp = main.temp,
-        feelsLike = main.feels_like,
-        tempMin = main.temp_min,
-        tempMax = main.temp_max,
-        dt = dt,
-        name = name
+        weatherId = current.weather[0].id,
+        temp = current.temp,
+        feelsLike = current.feels_like,
+        tempMin = current.temp, // TODO: Fix it
+        tempMax = current.feels_like, // TODO: Fix it
+        dt = current.dt,
+        name = "temp" // TODO: Fix it
     )
+}
+
+fun OneCallResponse.asDatabaseHourlyList(): List<DatabaseHourly> {
+    val databaseHourlyList = mutableListOf<DatabaseHourly>()
+    for (i in hourly.indices step 2) {
+        if (i > 24) break
+        databaseHourlyList.add(
+            DatabaseHourly(
+                hourIndex = i,
+                dt = hourly[i].dt,
+                weatherId = hourly[i].weather[0].id,
+                temp = hourly[i].temp,
+                feelsLike = hourly[i].feels_like
+            )
+        )
+    }
+    return databaseHourlyList.toList()
+}
+
+fun OneCallResponse.asDatabaseDailyList(): List<DatabaseDaily> {
+    val databaseDailyList = mutableListOf<DatabaseDaily>()
+    for (i in daily.indices) {
+        databaseDailyList.add(
+            DatabaseDaily(
+                dayIndex = i,
+                dt = daily[i].dt,
+                weatherId = daily[i].weather[0].id,
+                temp = daily[i].temp.day,
+                feelsLike = daily[i].feels_like.day,
+                tempMin = daily[i].temp.min,
+                tempMax = daily[i].temp.max,
+            )
+        )
+    }
+    return databaseDailyList.toList()
 }

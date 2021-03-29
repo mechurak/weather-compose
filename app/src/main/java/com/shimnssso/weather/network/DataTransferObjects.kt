@@ -42,7 +42,7 @@ data class Current(
     val pressure: Int,
     val humidity: Int,
     val dew_point: Float,
-    val uvi: Int,
+    val uvi: Float,
     val clouds: Int,
     val visibility: Int,
     val wind_speed: Float,

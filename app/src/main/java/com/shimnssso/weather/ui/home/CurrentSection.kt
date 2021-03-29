@@ -18,8 +18,10 @@ package com.shimnssso.weather.ui.home
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -43,7 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.shimnssso.weather.R
 import com.shimnssso.weather.database.Photo
@@ -60,49 +61,51 @@ import java.util.Locale
 fun CurrentSection(
     location: String,
     weather: WeatherDay,
-    weatherPhotoList: List<Photo>,
-    airPhotoList: List<Photo>
+    weatherPhotoList: List<Photo> = listOf(),
+    airPhotoList: List<Photo> = listOf()
 ) {
     val sdf = SimpleDateFormat("EEE, d MMM HH:mm", Locale.ENGLISH) // Wed, 4 Jul 12:08
     val date = Date(weather.dt * 1000)
-    val photoList =
-        remember(weatherPhotoList, airPhotoList) { (weatherPhotoList + airPhotoList).shuffled() }
+    val photoList = remember(weatherPhotoList, airPhotoList) { (weatherPhotoList + airPhotoList).shuffled() }
     var photoIndex by remember { mutableStateOf(0) }
-    val isWeather = !photoList.isEmpty() && photoList[photoIndex].category.startsWith("weather_")
+    val isWeather = photoList.isNotEmpty() && photoList[photoIndex].category.startsWith("weather_")
 
-    val bottomPadding: Dp by animateDpAsState(
-        targetValue = 30.dp,
-        // configure the animation duration and easing
+    val infiniteTransition = rememberInfiniteTransition()
+    val bottomPadding by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 30f,
         animationSpec = infiniteRepeatable(
             animation = keyframes {
                 durationMillis = 500
-                0.dp at 0 with FastOutSlowInEasing
+                0f at 0 with FastOutSlowInEasing
             },
             repeatMode = RepeatMode.Reverse
         )
     )
 
-    val weatherHeight: Dp by animateDpAsState(
-        targetValue = 80.dp,
+    val weatherHeight by infiniteTransition.animateFloat(
+        initialValue = 60f,
+        targetValue = 80f,
         // configure the animation duration and easing
         animationSpec = infiniteRepeatable(
             animation = keyframes {
                 durationMillis = 500
-                60.dp at 0 with FastOutSlowInEasing
-                80.dp at 250
+                60f at 0 with FastOutSlowInEasing
+                80f at 250
             },
             repeatMode = RepeatMode.Reverse
         )
     )
 
-    val airHeight: Dp by animateDpAsState(
-        targetValue = 60.dp,
+    val airHeight by infiniteTransition.animateFloat(
+        initialValue = 40f,
+        targetValue = 60f,
         // configure the animation duration and easing
         animationSpec = infiniteRepeatable(
             animation = keyframes {
                 durationMillis = 500
-                40.dp at 0 with FastOutSlowInEasing
-                60.dp at 250
+                40f at 0 with FastOutSlowInEasing
+                60f at 250
             },
             repeatMode = RepeatMode.Reverse
         )
@@ -156,17 +159,21 @@ fun CurrentSection(
             )
         }
 
+        val curWeatherPadding by animateDpAsState(if (isWeather) bottomPadding.dp else 0.dp)
+        val curWeatherHeight by animateDpAsState(if (isWeather) weatherHeight.dp else 80.dp)
         CoilImage(
             data = AssetViewModel.getImage(weather.weather),
             contentDescription = weather.weather,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
-                .padding(bottom = if (isWeather) bottomPadding else 0.dp)
+                .padding(bottom = curWeatherPadding)
                 .width(80.dp)
-                .height(if (isWeather) weatherHeight else 80.dp)
+                .height(curWeatherHeight)
                 .align(Alignment.BottomStart)
         )
 
+        val curAirPadding by animateDpAsState(if (isWeather && photoList.isNotEmpty()) 0.dp else bottomPadding.dp)
+        val curAirHeight by animateDpAsState(if (isWeather && photoList.isNotEmpty()) 60.dp else airHeight.dp)
         CoilImage(
             data = AssetViewModel.getImage(weather.air),
             contentDescription = weather.air,
@@ -174,10 +181,10 @@ fun CurrentSection(
             modifier = Modifier
                 .padding(
                     start = 60.dp,
-                    bottom = if (isWeather && !photoList.isEmpty()) 0.dp else bottomPadding
+                    bottom = curAirPadding
                 )
                 .width(60.dp)
-                .height(if (isWeather && !photoList.isEmpty()) 60.dp else airHeight)
+                .height(curAirHeight)
                 .align(Alignment.BottomCenter)
         )
 

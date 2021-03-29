@@ -102,9 +102,29 @@ class WeatherRepository(private val database: WeatherDatabase) {
                 Log.i("WeatherRepository", "daily[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
             }
 
-            database.weatherDao.insert(oneCallResponse.asCurrentDatabaseModel())
-            database.weatherDao.insertHourlies(oneCallResponse.asDatabaseHourlyList())
-            database.weatherDao.insertDailies(oneCallResponse.asDatabaseDailyList())
+            val airCurrentResponse = WeatherNetwork.openWeather.getAirCurrent(
+                lat = 37.32971822303459,
+                lon = 127.11430926761564,
+                appid = "e4b94150e27b4a33b5e5c2b05467a22f"
+            )
+            Log.i("WeatherRepository", "airCurrentResponse: $oneCallResponse")
+            for ((idx, item) in airCurrentResponse.list.withIndex()) {
+                Log.i("WeatherRepository", "current list[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
+            }
+            database.weatherDao.insert(oneCallResponse.asCurrentDatabaseModel(airCurrentResponse))
+
+
+            val airForecastResponse = WeatherNetwork.openWeather.getAirForecast(
+                lat = 37.32971822303459,
+                lon = 127.11430926761564,
+                appid = "e4b94150e27b4a33b5e5c2b05467a22f"
+            )
+            Log.i("WeatherRepository", "airForecastResponse: $oneCallResponse")
+            for ((idx, item) in airForecastResponse.list.withIndex()) {
+                Log.i("WeatherRepository", "current list[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
+            }
+            database.weatherDao.insertHourlies(oneCallResponse.asDatabaseHourlyList(airForecastResponse))
+            database.weatherDao.insertDailies(oneCallResponse.asDatabaseDailyList(airForecastResponse))
         }
     }
 }

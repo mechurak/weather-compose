@@ -129,5 +129,16 @@ class AssetViewModel(
                 else -> CATEGORY_WEATHER_1_SUNNY
             }
         }
+
+        fun getAirStr(aqi: Int): String {
+            return when (aqi) {
+                1 -> CATEGORY_AIR_1_VERY_GOOD
+                2 -> CATEGORY_AIR_2_FAIR
+                3 -> CATEGORY_AIR_3_MODERATE
+                4 -> CATEGORY_AIR_4_POOR
+                5 -> CATEGORY_AIR_5_VERY_POOR
+                else -> CATEGORY_AIR_3_MODERATE
+            }
+        }
     }
 }

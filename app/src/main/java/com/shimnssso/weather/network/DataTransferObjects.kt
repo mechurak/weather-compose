@@ -127,7 +127,7 @@ data class Alerts(
 /**
  * Convert Network results to database objects
  */
-fun OneCallResponse.asCurrentDatabaseModel(): DatabaseWeather {
+fun OneCallResponse.asCurrentDatabaseModel(airResponse: AirResponse): DatabaseWeather {
     return DatabaseWeather(
         type = "current",
         weatherId = current.weather[0].id,
@@ -136,30 +136,53 @@ fun OneCallResponse.asCurrentDatabaseModel(): DatabaseWeather {
         tempMin = current.temp, // TODO: Fix it
         tempMax = current.feels_like, // TODO: Fix it
         dt = current.dt,
-        name = "temp" // TODO: Fix it
+        name = "temp", // TODO: Fix it
+
+        aqi = airResponse.list[0].main.aqi,
+        fineParticle = airResponse.list[0].components.pm2_5,
+        CoarseParticulate = airResponse.list[0].components.pm10,
     )
 }
 
-fun OneCallResponse.asDatabaseHourlyList(): List<DatabaseHourly> {
+fun OneCallResponse.asDatabaseHourlyList(airResponse: AirResponse): List<DatabaseHourly> {
     val databaseHourlyList = mutableListOf<DatabaseHourly>()
+    val list = airResponse.list
+    var airDataIndex = 0
+
     for (i in hourly.indices step 2) {
         if (i > 24) break
+        while (hourly[i].dt > list[airDataIndex].dt) {
+            airDataIndex++
+        }
+        assert(hourly[i].dt == list[airDataIndex].dt)
+
         databaseHourlyList.add(
             DatabaseHourly(
                 hourIndex = i,
                 dt = hourly[i].dt,
                 weatherId = hourly[i].weather[0].id,
                 temp = hourly[i].temp,
-                feelsLike = hourly[i].feels_like
+                feelsLike = hourly[i].feels_like,
+
+                aqi = list[airDataIndex].main.aqi,
+                fineParticle = list[airDataIndex].components.pm2_5,
+                CoarseParticulate = list[airDataIndex].components.pm10,
             )
         )
     }
     return databaseHourlyList.toList()
 }
 
-fun OneCallResponse.asDatabaseDailyList(): List<DatabaseDaily> {
+fun OneCallResponse.asDatabaseDailyList(airResponse: AirResponse): List<DatabaseDaily> {
     val databaseDailyList = mutableListOf<DatabaseDaily>()
+    val list = airResponse.list
+    var airDataIndex = 0
+
     for (i in daily.indices) {
+        while (airDataIndex < list.size && daily[i].dt > list[airDataIndex].dt) {
+            airDataIndex++
+        }
+        assert(airDataIndex == list.size || daily[i].dt == list[airDataIndex].dt)
         databaseDailyList.add(
             DatabaseDaily(
                 dayIndex = i,
@@ -169,6 +192,10 @@ fun OneCallResponse.asDatabaseDailyList(): List<DatabaseDaily> {
                 feelsLike = daily[i].feels_like.day,
                 tempMin = daily[i].temp.min,
                 tempMax = daily[i].temp.max,
+
+                aqi = if (airDataIndex == list.size) -1 else list[airDataIndex].main.aqi,
+                fineParticle = if (airDataIndex == list.size) -1f else list[airDataIndex].components.pm2_5,
+                CoarseParticulate = if (airDataIndex == list.size) -1f else list[airDataIndex].components.pm10,
             )
         )
     }

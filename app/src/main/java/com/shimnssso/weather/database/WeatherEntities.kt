@@ -36,6 +36,10 @@ data class DatabaseWeather(
     val dt: Int,
 
     val name: String,
+
+    val aqi: Int,
+    val fineParticle: Float,  // pm2.5
+    val CoarseParticulate: Float,  // pm10
 )
 
 @Entity(tableName = "hourly_table")
@@ -46,6 +50,9 @@ data class DatabaseHourly(
     val weatherId: Int,
     val temp: Float,
     val feelsLike: Float,
+    val aqi: Int,
+    val fineParticle: Float,  // pm2.5
+    val CoarseParticulate: Float,  // pm10
 )
 
 @Entity(tableName = "daily_table")
@@ -58,6 +65,9 @@ data class DatabaseDaily(
     val feelsLike: Float,
     val tempMin: Float,
     val tempMax: Float,
+    val aqi: Int,
+    val fineParticle: Float,  // pm2.5
+    val CoarseParticulate: Float,  // pm10
 )
 
 /**
@@ -71,7 +81,7 @@ fun List<DatabaseWeather>.asDomainModel(): List<WeatherDay> {
             tempMin = it.tempMin,
             tempMax = it.tempMax,
             weather = AssetViewModel.getWeatherStr(it.weatherId),
-            air = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
+            air = AssetViewModel.getAirStr(it.aqi),
             dt = it.dt.toLong()
         )
     }
@@ -84,7 +94,7 @@ fun DatabaseWeather.asDomainModel(): WeatherDay {
         tempMin = tempMin,
         tempMax = tempMax,
         weather = AssetViewModel.getWeatherStr(weatherId),
-        air = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
+        air = AssetViewModel.getAirStr(aqi),
         dt = dt.toLong()
     )
 }
@@ -94,7 +104,7 @@ fun List<DatabaseHourly>.asDomainHourly(): List<WeatherHour> {
         WeatherHour(
             temp = it.temp,
             weather = AssetViewModel.getWeatherStr(it.weatherId),
-            air = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
+            air = AssetViewModel.getAirStr(it.aqi),
             dt = it.dt.toLong()
         )
     }
@@ -108,7 +118,7 @@ fun List<DatabaseDaily>.asDomainDaily(): List<WeatherDay> {
             tempMin = it.tempMin,
             tempMax = it.tempMax,
             weather = AssetViewModel.getWeatherStr(it.weatherId),
-            air = AssetViewModel.CATEGORY_AIR_1_VERY_GOOD,
+            air = AssetViewModel.getAirStr(it.aqi),
             dt = it.dt.toLong()
         )
     }

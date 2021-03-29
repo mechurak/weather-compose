@@ -32,6 +32,20 @@ interface OpenWeatherMapService {
         @Query("units") units: String?,
         @Query("appid") appid: String?
     ): OneCallResponse
+
+    @GET("2.5/air_pollution")
+    suspend fun getAirCurrent(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("appid") appid: String?
+    ): AirResponse
+
+    @GET("2.5/air_pollution/forecast")
+    suspend fun getAirForecast(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("appid") appid: String?
+    ): AirResponse
 }
 
 /**

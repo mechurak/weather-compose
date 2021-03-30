@@ -63,6 +63,10 @@ class WeatherViewModel(
     val isNetworkErrorShown: LiveData<Boolean>
         get() = _isNetworkErrorShown
 
+    private var _isLoading = MutableLiveData<Boolean>(false)
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
     /**
      * The data source this ViewModel will fetch results from.
      */
@@ -81,6 +85,7 @@ class WeatherViewModel(
      */
     fun refreshDataFromRepository() {
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 weatherRepository.refreshWeather()
                 _eventNetworkError.value = false
@@ -92,6 +97,7 @@ class WeatherViewModel(
                 // if (curWeather.value.isNullOrEmpty())
                 //     _eventNetworkError.value = true
             }
+            _isLoading.value = false
         }
     }
 

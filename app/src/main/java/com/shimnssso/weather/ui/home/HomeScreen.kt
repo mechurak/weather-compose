@@ -20,12 +20,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -69,70 +67,22 @@ fun HomeScreen(
 
     val isLoading by weatherViewModel.isLoading.observeAsState(false)
 
-    LoadingContent(
-        empty = false,
-        emptyContent = { FullScreenLoading() },
-        loading = isLoading,
+
+    SwipeToRefreshLayout(
+        refreshingState = isLoading,
         onRefresh = { weatherViewModel.refreshDataFromRepository() },
-        content = {
-            HomeContent(navController)
-        }
+        refreshIndicator = {
+            Surface(elevation = 10.dp, shape = CircleShape) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .padding(4.dp)
+                )
+            }
+        },
+        content = { HomeContent(navController) }
     )
 }
-
-
-/**
- * Display an initial empty state or swipe to refresh content.
- *
- * @param empty (state) when true, display [emptyContent]
- * @param emptyContent (slot) the content to display for the empty state
- * @param loading (state) when true, display a loading spinner over [content]
- * @param onRefresh (event) event to request refresh
- * @param content (slot) the main content to show
- */
-@Composable
-private fun LoadingContent(
-    empty: Boolean,
-    emptyContent: @Composable () -> Unit,
-    loading: Boolean,
-    onRefresh: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    if (empty) {
-        emptyContent()
-    } else {
-        SwipeToRefreshLayout(
-            refreshingState = loading,
-            onRefresh = onRefresh,
-            refreshIndicator = {
-                Surface(elevation = 10.dp, shape = CircleShape) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .padding(4.dp)
-                    )
-                }
-            },
-            content = content,
-        )
-    }
-}
-
-
-/**
- * Full screen circular progress indicator
- */
-@Composable
-private fun FullScreenLoading() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
 
 @Composable
 fun HomeContent(

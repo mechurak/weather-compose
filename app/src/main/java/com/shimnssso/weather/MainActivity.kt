@@ -53,6 +53,7 @@ import com.shimnssso.weather.ui.home.HomeScreen
 import com.shimnssso.weather.ui.setting.SettingScreen
 import com.shimnssso.weather.ui.theme.MyTheme
 import com.shimnssso.weather.viewmodels.AssetViewModel
+import com.yalantis.ucrop.UCrop
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import java.io.File
 import java.io.FileOutputStream
@@ -122,35 +123,6 @@ class MainActivity : AppCompatActivity() {
             .check()
     }
 
-    /**
-     * A method is used  asking the permission for camera and storage and image capturing and selection from Camera.
-     */
-    fun takePhotoFromCamera() {
-
-        Dexter.withContext(this)
-            .withPermissions(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
-            )
-            .withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    // Here after all the permission are granted launch the CAMERA to capture an image.
-                    if (report!!.areAllPermissionsGranted()) {
-                        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        cameraChooserLauncher.launch(intent)
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: MutableList<PermissionRequest>?,
-                    token: PermissionToken?
-                ) {
-                    showRationalDialogForPermissions()
-                }
-            }).onSameThread()
-            .check()
-    }
 
     /**
      * A function used to show the alert dialog when the permissions are denied and need to allow it from settings app info.
@@ -223,21 +195,10 @@ class MainActivity : AppCompatActivity() {
                 val selectedPhotoUri = intent!!.data
                 try {
                     selectedPhotoUri?.let {
-                        val bitmap: Bitmap?
-                        val imagePath: String?
-                        if (Build.VERSION.SDK_INT < 28) {
-                            bitmap = MediaStore.Images.Media.getBitmap(
-                                this.contentResolver,
-                                selectedPhotoUri
-                            )
-                        } else {
-                            val source =
-                                ImageDecoder.createSource(this.contentResolver, selectedPhotoUri)
-                            bitmap = ImageDecoder.decodeBitmap(source)
-                        }
-                        imagePath = saveImageToInternalStorage(bitmap!!)
-                        Log.e("Saved Image : ", "Path :: $imagePath")
-                        viewModel.onImageSaved(imagePath)
+                        UCrop.of(selectedPhotoUri, Uri.fromFile(File(cacheDir, "tempFile.jpg")))
+                            .withAspectRatio(1f, 1f)
+                            .withMaxResultSize(500, 500)
+                            .start(this)
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -247,19 +208,32 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    private val cameraChooserLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val intent = result.data // Handle the Intent //do stuff here
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            val resultUri = UCrop.getOutput(data!!)
+            Log.e("MainActivity", "onActivityResult(). resultUri: $resultUri")
 
-                val thumbnail: Bitmap =
-                    intent!!.extras!!.get("data") as Bitmap // Bitmap from camera
-
-                val imagePath = saveImageToInternalStorage(thumbnail)
-                Log.e("Saved Image : ", "Path :: $imagePath")
-                viewModel.onImageSaved(imagePath)
+            val bitmap: Bitmap? = if (Build.VERSION.SDK_INT < 28) {
+                MediaStore.Images.Media.getBitmap(
+                    this.contentResolver,
+                    resultUri
+                )
+            } else {
+                val source =
+                    ImageDecoder.createSource(this.contentResolver, resultUri!!)
+                ImageDecoder.decodeBitmap(source)
             }
+            val imagePath = saveImageToInternalStorage(bitmap!!)
+            Log.e("MainActivity", "onActivityResult(). Path :: $imagePath")
+            viewModel.onImageSaved(imagePath)
+
+
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            val cropError = UCrop.getError(data!!)
+            Log.e("MainActivity", "cropError: $cropError")
         }
+    }
 
     companion object {
         private const val IMAGE_DIRECTORY = "WeatherAppImages"

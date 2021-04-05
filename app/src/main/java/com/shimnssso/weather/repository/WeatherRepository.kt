@@ -15,7 +15,6 @@
  */
 package com.shimnssso.weather.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.shimnssso.weather.database.DatabaseWeather
@@ -33,6 +32,7 @@ import com.shimnssso.weather.viewmodels.WeatherDay
 import com.shimnssso.weather.viewmodels.WeatherHour
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -77,7 +77,7 @@ class WeatherRepository(private val database: WeatherDatabase) {
      */
     suspend fun refreshWeather() {
         withContext(Dispatchers.IO) {
-            Log.i("WeatherRepository", "refresh videos is called")
+            Timber.d( "refresh videos is called")
             val oneCallResponse = WeatherNetwork.openWeather.getWeather(
                 lat = 37.32971822303459,
                 lon = 127.11430926761564,
@@ -85,21 +85,21 @@ class WeatherRepository(private val database: WeatherDatabase) {
                 units = "metric",
                 appid = "e4b94150e27b4a33b5e5c2b05467a22f"
             )
-            Log.i("WeatherRepository", "oneCallResponse: $oneCallResponse")
+            Timber.d( "oneCallResponse: $oneCallResponse")
 
             val sdf = SimpleDateFormat("EEE, d MMM HH:mm", Locale.ENGLISH) // Wed, 4 Jul 12:08
             val current = oneCallResponse.current
             val daily = oneCallResponse.daily
             val hourly = oneCallResponse.hourly
 
-            Log.i("WeatherRepository", "current: ${sdf.format(Date(current.dt * 1000L))}")
+            Timber.d( "current: ${sdf.format(Date(current.dt * 1000L))}")
 
             for ((idx, item) in hourly.withIndex()) {
-                Log.i("WeatherRepository", "hourly[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
+                Timber.d( "hourly[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
             }
 
             for ((idx, item) in daily.withIndex()) {
-                Log.i("WeatherRepository", "daily[$idx]: ${sdf.format(Date(item.dt * 1000L))} ${item.dt}")
+                Timber.d( "daily[$idx]: ${sdf.format(Date(item.dt * 1000L))} ${item.dt}")
             }
 
             val airCurrentResponse = WeatherNetwork.openWeather.getAirCurrent(
@@ -107,9 +107,9 @@ class WeatherRepository(private val database: WeatherDatabase) {
                 lon = 127.11430926761564,
                 appid = "e4b94150e27b4a33b5e5c2b05467a22f"
             )
-            Log.i("WeatherRepository", "airCurrentResponse: $oneCallResponse")
+            Timber.d( "airCurrentResponse: $oneCallResponse")
             for ((idx, item) in airCurrentResponse.list.withIndex()) {
-                Log.i("WeatherRepository", "current list[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
+                Timber.d( "current list[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
             }
             database.weatherDao.insert(oneCallResponse.asCurrentDatabaseModel(airCurrentResponse))
 
@@ -119,9 +119,9 @@ class WeatherRepository(private val database: WeatherDatabase) {
                 lon = 127.11430926761564,
                 appid = "e4b94150e27b4a33b5e5c2b05467a22f"
             )
-            Log.i("WeatherRepository", "airForecastResponse: $oneCallResponse")
+            Timber.d( "airForecastResponse: $oneCallResponse")
             for ((idx, item) in airForecastResponse.list.withIndex()) {
-                Log.i("WeatherRepository", "current list[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
+                Timber.d( "current list[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
             }
             database.weatherDao.insertHourlies(oneCallResponse.asDatabaseHourlyList(airForecastResponse))
             database.weatherDao.insertDailies(oneCallResponse.asDatabaseDailyList(airForecastResponse))

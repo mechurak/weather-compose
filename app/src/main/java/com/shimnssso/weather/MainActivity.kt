@@ -29,7 +29,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
@@ -55,6 +54,7 @@ import com.shimnssso.weather.ui.theme.MyTheme
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import com.yalantis.ucrop.UCrop
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             val resultUri = UCrop.getOutput(data!!)
-            Log.e("MainActivity", "onActivityResult(). resultUri: $resultUri")
+            Timber.d( "onActivityResult(). resultUri: $resultUri")
 
             val bitmap: Bitmap? = if (Build.VERSION.SDK_INT < 28) {
                 MediaStore.Images.Media.getBitmap(
@@ -226,13 +226,13 @@ class MainActivity : AppCompatActivity() {
                 ImageDecoder.decodeBitmap(source)
             }
             val imagePath = saveImageToInternalStorage(bitmap!!)
-            Log.e("MainActivity", "onActivityResult(). Path :: $imagePath")
+            Timber.d( "onActivityResult(). Path :: $imagePath")
             viewModel.onImageSaved(imagePath)
 
 
         } else if (resultCode == UCrop.RESULT_ERROR) {
             val cropError = UCrop.getError(data!!)
-            Log.e("MainActivity", "cropError: $cropError")
+            Timber.d( "cropError: $cropError")
         }
     }
 

@@ -16,7 +16,6 @@
 package com.shimnssso.weather.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.AndroidViewModel
@@ -32,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 
 class AssetViewModel(
@@ -72,7 +72,7 @@ class AssetViewModel(
         viewModelScope.launch {
             val file = File(photo.path)
             val ret = file.delete()
-            Log.i("AssetViewModel", "removeImage(). ret: $ret")
+            Timber.i( "removeImage(). ret: $ret")
             dataSource.remove(photo.photoId)
         }
     }

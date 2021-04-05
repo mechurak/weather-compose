@@ -16,7 +16,6 @@
 package com.shimnssso.weather.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -28,6 +27,7 @@ import com.shimnssso.weather.database.WeatherDatabase
 import com.shimnssso.weather.repository.WeatherRepository
 import com.shimnssso.weather.utils.Utils
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.IOException
 
 class WeatherViewModel(
@@ -91,7 +91,7 @@ class WeatherViewModel(
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (networkError: IOException) {
-                Log.e("WeatherViewModel", networkError.toString())
+                Timber.e(networkError.toString())
                 networkError.printStackTrace()
                 // Show a Toast error message and hide the progress bar.
                 // if (curWeather.value.isNullOrEmpty())

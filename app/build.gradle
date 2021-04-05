@@ -83,6 +83,8 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
 
+    // logging (https://github.com/JakeWharton/timber)
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     // Image loading (https://google.github.io/accompanist/coil/)
     implementation "dev.chrisbanes.accompanist:accompanist-coil:0.6.2"

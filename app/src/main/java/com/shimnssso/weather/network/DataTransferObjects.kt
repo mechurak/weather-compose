@@ -15,11 +15,11 @@
  */
 package com.shimnssso.weather.network
 
-import android.util.Log
 import com.shimnssso.weather.database.DatabaseDaily
 import com.shimnssso.weather.database.DatabaseHourly
 import com.shimnssso.weather.database.DatabaseWeather
 import com.squareup.moshi.JsonClass
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -141,7 +141,7 @@ fun OneCallResponse.asCurrentDatabaseModel(airResponse: AirResponse): DatabaseWe
     for (item in daily) {
         val dayDate = Date(item.dt * 1000L)
         if (sdf.format(dayDate).equals(curFormantStr)) {
-            Log.i("DataTransferObjects", "curDaily: $item")
+            Timber.i("curDaily: $item")
             targetDayTempMin = item.temp.min
             targetDayTempMax = item.temp.max
         }

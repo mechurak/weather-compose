@@ -99,7 +99,7 @@ class WeatherRepository(private val database: WeatherDatabase) {
             }
 
             for ((idx, item) in daily.withIndex()) {
-                Log.i("WeatherRepository", "daily[$idx]: ${sdf.format(Date(item.dt * 1000L))}")
+                Log.i("WeatherRepository", "daily[$idx]: ${sdf.format(Date(item.dt * 1000L))} ${item.dt}")
             }
 
             val airCurrentResponse = WeatherNetwork.openWeather.getAirCurrent(

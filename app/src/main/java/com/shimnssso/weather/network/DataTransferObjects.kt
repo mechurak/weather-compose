@@ -15,10 +15,14 @@
  */
 package com.shimnssso.weather.network
 
+import android.util.Log
 import com.shimnssso.weather.database.DatabaseDaily
 import com.shimnssso.weather.database.DatabaseHourly
 import com.shimnssso.weather.database.DatabaseWeather
 import com.squareup.moshi.JsonClass
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @JsonClass(generateAdapter = true)
 data class OneCallResponse(
@@ -128,13 +132,28 @@ data class Alerts(
  * Convert Network results to database objects
  */
 fun OneCallResponse.asCurrentDatabaseModel(airResponse: AirResponse): DatabaseWeather {
+    val sdf = SimpleDateFormat("d MMM", Locale.ENGLISH) // Wed, 4
+    val curFormantStr = sdf.format(Date(current.dt * 1000L))
+
+    // TODO: Find more efficient way
+    var targetDayTempMin = 0f
+    var targetDayTempMax = 0f
+    for (item in daily) {
+        val dayDate = Date(item.dt * 1000L)
+        if (sdf.format(dayDate).equals(curFormantStr)) {
+            Log.i("DataTransferObjects", "curDaily: $item")
+            targetDayTempMin = item.temp.min
+            targetDayTempMax = item.temp.max
+        }
+    }
+
     return DatabaseWeather(
         type = "current",
         weatherId = current.weather[0].id,
         temp = current.temp,
         feelsLike = current.feels_like,
-        tempMin = current.temp, // TODO: Fix it
-        tempMax = current.feels_like, // TODO: Fix it
+        tempMin = targetDayTempMin,
+        tempMax = targetDayTempMax,
         dt = current.dt,
         name = "temp", // TODO: Fix it
 

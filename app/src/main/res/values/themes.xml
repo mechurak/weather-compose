@@ -29,6 +29,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Theme.AndroidDevChallenge.Splash"  parent="Theme.AndroidDevChallenge.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
     <style name="Theme.AndroidDevChallenge.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.AndroidDevChallenge.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

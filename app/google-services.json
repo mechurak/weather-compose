@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "99045008854",
+    "project_id": "familyweather-841f2",
+    "storage_bucket": "familyweather-841f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99045008854:android:5390f3792338bdc7a03077",
+        "android_client_info": {
+          "package_name": "com.shimnssso.weather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "99045008854-lpu1jisdc6lgi2r0q58avnrrvq8m3c56.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shimnssso.weather",
+            "certificate_hash": "39ef3780161cc088ef277d2fe26f5b805c0143f5"
+          }
+        },
+        {
+          "client_id": "99045008854-3fm5t5b941m2ukj6ak11oimqkgvnj05d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6Ka2rnHFwH1BCAdFKbx1h_09J12yod_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "99045008854-3fm5t5b941m2ukj6ak11oimqkgvnj05d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

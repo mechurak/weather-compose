@@ -42,6 +42,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -60,6 +61,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
+import com.firebase.ui.auth.IdpResponse
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: AssetViewModel by lazy {
@@ -211,36 +213,53 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-            val resultUri = UCrop.getOutput(data!!)
-            Timber.d( "onActivityResult(). resultUri: $resultUri")
+        if (requestCode == UCrop.REQUEST_CROP) {
+            if (resultCode == RESULT_OK) {
+                val resultUri = UCrop.getOutput(data!!)
+                Timber.d( "onActivityResult(). resultUri: $resultUri")
 
-            val bitmap: Bitmap? = if (Build.VERSION.SDK_INT < 28) {
-                MediaStore.Images.Media.getBitmap(
-                    this.contentResolver,
-                    resultUri
-                )
-            } else {
-                val source =
-                    ImageDecoder.createSource(this.contentResolver, resultUri!!)
-                ImageDecoder.decodeBitmap(source)
+                val bitmap: Bitmap? = if (Build.VERSION.SDK_INT < 28) {
+                    MediaStore.Images.Media.getBitmap(
+                        this.contentResolver,
+                        resultUri
+                    )
+                } else {
+                    val source =
+                        ImageDecoder.createSource(this.contentResolver, resultUri!!)
+                    ImageDecoder.decodeBitmap(source)
+                }
+                val imagePath = saveImageToInternalStorage(bitmap!!)
+                Timber.d( "onActivityResult(). Path :: $imagePath")
+                viewModel.onImageSaved(imagePath)
+
+
+            } else if (resultCode == UCrop.RESULT_ERROR) {
+                val cropError = UCrop.getError(data!!)
+                Timber.d( "cropError: $cropError")
             }
-            val imagePath = saveImageToInternalStorage(bitmap!!)
-            Timber.d( "onActivityResult(). Path :: $imagePath")
-            viewModel.onImageSaved(imagePath)
-
-
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            val cropError = UCrop.getError(data!!)
-            Timber.d( "cropError: $cropError")
         }
+        else if (requestCode == SIGN_REQUEST) {
+            val response = IdpResponse.fromResultIntent(data)
+
+            if (resultCode == RESULT_OK) {
+                val user = FirebaseAuth.getInstance().currentUser
+                Timber.i("user: $user")
+            } else {
+                // Sign in failed
+                if (response == null) {
+                    // User pressed back button
+                    Timber.e("User pressed back button")
+                    return
+                }
+                Timber.e("message: ${response.error!!}")
+            }
+        }
+
     }
 
     companion object {
         private const val IMAGE_DIRECTORY = "WeatherAppImages"
-
-        // A constant variable for place picker
-        private const val PLACE_AUTOCOMPLETE_REQUEST_CODE = 3
+        const val SIGN_REQUEST = 1000
     }
 }
 

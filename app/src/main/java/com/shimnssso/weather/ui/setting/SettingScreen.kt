@@ -56,6 +56,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.common.Scopes
 import com.shimnssso.weather.MainActivity
 import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.database.WeatherDatabase
@@ -270,6 +272,7 @@ fun SettingScreen(
 
 @Composable
 private fun AppBar(navController: NavController?) {
+    val activity = LocalContext.current as MainActivity
     TopAppBar(
         navigationIcon = {
             IconButton(onClick = { navController!!.navigate("home") }) {
@@ -277,7 +280,18 @@ private fun AppBar(navController: NavController?) {
             }
         },
         actions = {
-            IconButton(onClick = { /* TODO: Navigate to import screen */ }) {
+            IconButton(onClick = {
+               val providers = arrayListOf(
+                   AuthUI.IdpConfig.EmailBuilder().build(),
+                   AuthUI.IdpConfig.GoogleBuilder().setScopes(listOf(Scopes.DRIVE_FILE, "https://www.googleapis.com/auth/youtube.readonly")).build()
+               )
+                activity.startActivityForResult(AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(providers)
+                    .build(),
+                    MainActivity.SIGN_REQUEST
+                )
+            }) {
                 Icon(Icons.Filled.GetApp, contentDescription = null)
             }
             IconButton(onClick = { /* TODO: Navigate to share screen */ }) {

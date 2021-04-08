@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "99045008854-u4bfbgt40g2of2h01qc6626s8stm9v9t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shimnssso.weather",
+            "certificate_hash": "a0bdb3b6f0c4be90c69d5f4c1df090807fd7fe1f"
+          }
+        },
+        {
           "client_id": "99045008854-3fm5t5b941m2ukj6ak11oimqkgvnj05d.apps.googleusercontent.com",
           "client_type": 3
         }

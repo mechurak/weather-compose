@@ -283,7 +283,7 @@ private fun AppBar(navController: NavController?) {
             IconButton(onClick = {
                val providers = arrayListOf(
                    AuthUI.IdpConfig.EmailBuilder().build(),
-                   AuthUI.IdpConfig.GoogleBuilder().setScopes(listOf(Scopes.DRIVE_FILE, "https://www.googleapis.com/auth/youtube.readonly")).build()
+                   AuthUI.IdpConfig.GoogleBuilder().build()
                )
                 activity.startActivityForResult(AuthUI.getInstance()
                     .createSignInIntentBuilder()

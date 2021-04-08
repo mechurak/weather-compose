@@ -16,7 +16,7 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.4.31'
+        kotlin_version = '1.4.32'
         compose_version = '1.0.0-beta03'
         coroutines_version = '1.4.2'
         room_version = '2.2.6'
@@ -29,7 +29,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha13'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha14'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.5'
     }

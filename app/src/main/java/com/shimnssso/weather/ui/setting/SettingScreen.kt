@@ -39,6 +39,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.GetApp
+import androidx.compose.material.icons.filled.Login
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
@@ -57,7 +59,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.firebase.ui.auth.AuthUI
-import com.google.android.gms.common.Scopes
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.shimnssso.weather.MainActivity
 import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.database.WeatherDatabase
@@ -71,6 +74,12 @@ import java.io.File
 fun SettingScreen(
     navController: NavController? = null,
 ) {
+    val currentUser = Firebase.auth.currentUser
+    var currentUserID = ""
+    if (currentUser != null) {
+        currentUserID = currentUser.uid
+    }
+
     Column {
         Spacer(
             Modifier
@@ -79,7 +88,7 @@ fun SettingScreen(
                 .fillMaxWidth()
         )
         Scaffold(
-            topBar = { AppBar(navController) },
+            topBar = { AppBar(navController, currentUserID) },
             modifier = Modifier.navigationBarsPadding()
         ) {
             val activity = LocalContext.current as MainActivity
@@ -271,7 +280,7 @@ fun SettingScreen(
 }
 
 @Composable
-private fun AppBar(navController: NavController?) {
+private fun AppBar(navController: NavController?, currentUserID: String) {
     val activity = LocalContext.current as MainActivity
     TopAppBar(
         navigationIcon = {
@@ -280,22 +289,35 @@ private fun AppBar(navController: NavController?) {
             }
         },
         actions = {
-            IconButton(onClick = {
-               val providers = arrayListOf(
-                   AuthUI.IdpConfig.EmailBuilder().build(),
-                   AuthUI.IdpConfig.GoogleBuilder().build()
-               )
-                activity.startActivityForResult(AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setAvailableProviders(providers)
-                    .build(),
-                    MainActivity.SIGN_REQUEST
-                )
-            }) {
-                Icon(Icons.Filled.GetApp, contentDescription = null)
-            }
-            IconButton(onClick = { /* TODO: Navigate to share screen */ }) {
-                Icon(Icons.Filled.Share, contentDescription = null)
+            if (currentUserID.isEmpty()) {
+                IconButton(onClick = {
+                    val providers = arrayListOf(
+                        AuthUI.IdpConfig.EmailBuilder().build(),
+                        AuthUI.IdpConfig.GoogleBuilder().build()
+                    )
+                    activity.startActivityForResult(AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .build(),
+                        MainActivity.SIGN_REQUEST
+                    )
+                }) {
+                    Icon(Icons.Filled.Login, contentDescription = null)
+                }
+            } else {
+                IconButton(onClick = { /* TODO: Navigate to online album screen */ }) {
+                    Icon(Icons.Filled.GetApp, contentDescription = null)
+                }
+
+                IconButton(onClick = { /* TODO: Navigate to share screen */ }) {
+                    Icon(Icons.Filled.Share, contentDescription = null)
+                }
+
+                IconButton(onClick = {
+                    AuthUI.getInstance().signOut(activity)
+                }) {
+                    Icon(Icons.Filled.Logout, contentDescription = null)
+                }
             }
         },
         title = {

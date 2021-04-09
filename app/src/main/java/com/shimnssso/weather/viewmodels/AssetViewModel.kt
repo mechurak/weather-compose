@@ -61,6 +61,10 @@ class AssetViewModel(
     val currentUserId: LiveData<String>
         get() = _currentUserId
 
+    private var _isLoading = MutableLiveData<Boolean>(false)
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
     init {
         _currentUserId.value = Firebase.auth.currentUser?.uid ?: ""
     }
@@ -105,9 +109,11 @@ class AssetViewModel(
             .addOnFailureListener { e ->
                 Timber.i("uploadAlbum(). failed. $e")
             }
+        _isLoading.value = false
     }
 
     fun uploadAlbum() {
+        _isLoading.value = true
         viewModelScope.launch {
             val doc = Firebase.firestore.collection("albums").document()
             val docId = doc.id

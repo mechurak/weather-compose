@@ -16,12 +16,20 @@
 package com.shimnssso.weather.viewmodels
 
 import android.app.Application
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.shimnssso.weather.R
 import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.database.PhotoDao
@@ -49,6 +57,14 @@ class AssetViewModel(
     val airPoorPhotos = dataSource.getPhotos(CATEGORY_AIR_4_POOR)
     val airVeryPoorPhotos = dataSource.getPhotos(CATEGORY_AIR_5_VERY_POOR)
 
+    private var _currentUserId = MutableLiveData<String>("")
+    val currentUserId: LiveData<String>
+        get() = _currentUserId
+
+    init {
+        _currentUserId.value = Firebase.auth.currentUser?.uid ?: ""
+    }
+
     fun onImageSaved(imagePath: String) {
         viewModelScope.launch {
             val curCategoryFlow: Flow<String> = app.dataStore.data.map { preferences ->
@@ -72,8 +88,47 @@ class AssetViewModel(
         viewModelScope.launch {
             val file = File(photo.path)
             val ret = file.delete()
-            Timber.i( "removeImage(). ret: $ret")
+            Timber.i("removeImage(). ret: $ret")
             dataSource.remove(photo.photoId)
+        }
+    }
+
+
+    fun uploadAlbumDoc(docId: String, uploadedSunnyPhotos: ArrayList<String>) {
+        val album = Album("Test", currentUserId.value!!, docId, uploadedSunnyPhotos)
+        Firebase.firestore.collection("albums")
+            .document()
+            .set(album, SetOptions.merge())
+            .addOnSuccessListener {
+                Timber.i("uploadAlbum(). succeeded")
+            }
+            .addOnFailureListener { e ->
+                Timber.i("uploadAlbum(). failed. $e")
+            }
+    }
+
+    fun uploadAlbum() {
+        viewModelScope.launch {
+            val doc = Firebase.firestore.collection("albums").document()
+            val docId = doc.id
+
+            val uploadedSunnyPhotos = ArrayList<String>()
+            val storageFolder = Firebase.storage.getReference(docId)
+            val expectedSize = sunnyPhotos.value!!.size
+            for (sunnyPhoto in sunnyPhotos.value!!) {
+                val uri = Uri.parse("file://" + sunnyPhoto.path)
+                val ref = storageFolder.child(uri.lastPathSegment!!)
+                ref.putFile(uri)
+                    .addOnSuccessListener {
+                        it.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
+                            Timber.i("uri: $uri")
+                            uploadedSunnyPhotos.add(uri.toString())
+                            if (uploadedSunnyPhotos.size == expectedSize) {
+                                uploadAlbumDoc(docId, uploadedSunnyPhotos)
+                            }
+                        }
+                    }
+            }
         }
     }
 

@@ -59,8 +59,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.firebase.ui.auth.AuthUI
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.shimnssso.weather.MainActivity
 import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.database.WeatherDatabase
@@ -74,11 +72,14 @@ import java.io.File
 fun SettingScreen(
     navController: NavController? = null,
 ) {
-    val currentUser = Firebase.auth.currentUser
-    var currentUserID = ""
-    if (currentUser != null) {
-        currentUserID = currentUser.uid
-    }
+    val activity = LocalContext.current as MainActivity
+
+    val dataSource = WeatherDatabase.getInstance(activity).photoDao
+    val assetViewModel: AssetViewModel = viewModel(
+        factory = AssetViewModel.Factory(dataSource, activity.application)
+    )
+
+    val currentUserId by assetViewModel.currentUserId.observeAsState("")
 
     Column {
         Spacer(
@@ -88,15 +89,9 @@ fun SettingScreen(
                 .fillMaxWidth()
         )
         Scaffold(
-            topBar = { AppBar(navController, currentUserID) },
+            topBar = { AppBar(navController, assetViewModel, currentUserId) },
             modifier = Modifier.navigationBarsPadding()
         ) {
-            val activity = LocalContext.current as MainActivity
-
-            val dataSource = WeatherDatabase.getInstance(activity).photoDao
-            val assetViewModel: AssetViewModel = viewModel(
-                factory = AssetViewModel.Factory(dataSource, activity.application)
-            )
             val sunnyPhotos by assetViewModel.sunnyPhotos.observeAsState(listOf())
             val cloudyPhotos by assetViewModel.cloudyPhotos.observeAsState(listOf())
             val rainyPhotos by assetViewModel.rainyPhotos.observeAsState(listOf())
@@ -280,7 +275,7 @@ fun SettingScreen(
 }
 
 @Composable
-private fun AppBar(navController: NavController?, currentUserID: String) {
+private fun AppBar(navController: NavController?, assetViewModel: AssetViewModel, currentUserID: String) {
     val activity = LocalContext.current as MainActivity
     TopAppBar(
         navigationIcon = {
@@ -295,10 +290,11 @@ private fun AppBar(navController: NavController?, currentUserID: String) {
                         AuthUI.IdpConfig.EmailBuilder().build(),
                         AuthUI.IdpConfig.GoogleBuilder().build()
                     )
-                    activity.startActivityForResult(AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
+                    activity.startActivityForResult(
+                        AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .build(),
                         MainActivity.SIGN_REQUEST
                     )
                 }) {
@@ -309,7 +305,10 @@ private fun AppBar(navController: NavController?, currentUserID: String) {
                     Icon(Icons.Filled.GetApp, contentDescription = null)
                 }
 
-                IconButton(onClick = { /* TODO: Navigate to share screen */ }) {
+                IconButton(onClick = {
+                    /* TODO: Navigate to share screen */
+                    assetViewModel.uploadAlbum()
+                }) {
                     Icon(Icons.Filled.Share, contentDescription = null)
                 }
 

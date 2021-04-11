@@ -97,7 +97,6 @@ class AssetViewModel(
         }
     }
 
-
     fun uploadAlbumDoc(title: String, docId: String, uploadedSunnyPhotos: ArrayList<String>) {
         val album = Album(title, currentUserId.value!!, docId, uploadedSunnyPhotos)
         Firebase.firestore.collection("albums")

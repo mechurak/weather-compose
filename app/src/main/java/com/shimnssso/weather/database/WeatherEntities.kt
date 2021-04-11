@@ -38,8 +38,8 @@ data class DatabaseWeather(
     val name: String,
 
     val aqi: Int,
-    val fineParticle: Float,  // pm2.5
-    val CoarseParticulate: Float,  // pm10
+    val fineParticle: Float, // pm2.5
+    val CoarseParticulate: Float, // pm10
 )
 
 @Entity(tableName = "hourly_table")
@@ -51,8 +51,8 @@ data class DatabaseHourly(
     val temp: Float,
     val feelsLike: Float,
     val aqi: Int,
-    val fineParticle: Float,  // pm2.5
-    val CoarseParticulate: Float,  // pm10
+    val fineParticle: Float, // pm2.5
+    val CoarseParticulate: Float, // pm10
 )
 
 @Entity(tableName = "daily_table")
@@ -66,8 +66,8 @@ data class DatabaseDaily(
     val tempMin: Float,
     val tempMax: Float,
     val aqi: Int,
-    val fineParticle: Float,  // pm2.5
-    val CoarseParticulate: Float,  // pm10
+    val fineParticle: Float, // pm2.5
+    val CoarseParticulate: Float, // pm10
 )
 
 /**

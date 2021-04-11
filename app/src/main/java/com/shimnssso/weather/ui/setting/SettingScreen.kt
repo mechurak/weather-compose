@@ -311,19 +311,21 @@ private fun AppBar(
         },
         actions = {
             if (currentUserID.isEmpty()) {
-                IconButton(onClick = {
-                    val providers = arrayListOf(
-                        AuthUI.IdpConfig.EmailBuilder().build(),
-                        AuthUI.IdpConfig.GoogleBuilder().build()
-                    )
-                    activity.startActivityForResult(
-                        AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(providers)
-                            .build(),
-                        MainActivity.SIGN_REQUEST
-                    )
-                }) {
+                IconButton(
+                    onClick = {
+                        val providers = arrayListOf(
+                            AuthUI.IdpConfig.EmailBuilder().build(),
+                            AuthUI.IdpConfig.GoogleBuilder().build()
+                        )
+                        activity.startActivityForResult(
+                            AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .build(),
+                            MainActivity.SIGN_REQUEST
+                        )
+                    }
+                ) {
                     Icon(Icons.Filled.Login, contentDescription = null)
                 }
             } else {
@@ -331,15 +333,19 @@ private fun AppBar(
                     Icon(Icons.Filled.GetApp, contentDescription = null)
                 }
 
-                IconButton(onClick = {
-                    onUploadBtn()
-                }) {
+                IconButton(
+                    onClick = {
+                        onUploadBtn()
+                    }
+                ) {
                     Icon(Icons.Filled.Share, contentDescription = null)
                 }
 
-                IconButton(onClick = {
-                    AuthUI.getInstance().signOut(activity)
-                }) {
+                IconButton(
+                    onClick = {
+                        AuthUI.getInstance().signOut(activity)
+                    }
+                ) {
                     Icon(Icons.Filled.Logout, contentDescription = null)
                 }
             }

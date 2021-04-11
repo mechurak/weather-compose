@@ -67,7 +67,6 @@ fun HomeScreen(
 
     val isLoading by weatherViewModel.isLoading.observeAsState(false)
 
-
     SwipeToRefreshLayout(
         refreshingState = isLoading,
         onRefresh = { weatherViewModel.refreshDataFromRepository() },

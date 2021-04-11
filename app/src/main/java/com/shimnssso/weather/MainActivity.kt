@@ -42,6 +42,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -61,7 +62,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
-import com.firebase.ui.auth.IdpResponse
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: AssetViewModel by lazy {
@@ -125,7 +125,6 @@ class MainActivity : AppCompatActivity() {
             }).onSameThread()
             .check()
     }
-
 
     /**
      * A function used to show the alert dialog when the permissions are denied and need to allow it from settings app info.
@@ -216,7 +215,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == UCrop.REQUEST_CROP) {
             if (resultCode == RESULT_OK) {
                 val resultUri = UCrop.getOutput(data!!)
-                Timber.d( "onActivityResult(). resultUri: $resultUri")
+                Timber.d("onActivityResult(). resultUri: $resultUri")
 
                 val bitmap: Bitmap? = if (Build.VERSION.SDK_INT < 28) {
                     MediaStore.Images.Media.getBitmap(
@@ -229,16 +228,13 @@ class MainActivity : AppCompatActivity() {
                     ImageDecoder.decodeBitmap(source)
                 }
                 val imagePath = saveImageToInternalStorage(bitmap!!)
-                Timber.d( "onActivityResult(). Path :: $imagePath")
+                Timber.d("onActivityResult(). Path :: $imagePath")
                 viewModel.onImageSaved(imagePath)
-
-
             } else if (resultCode == UCrop.RESULT_ERROR) {
                 val cropError = UCrop.getError(data!!)
-                Timber.d( "cropError: $cropError")
+                Timber.d("cropError: $cropError")
             }
-        }
-        else if (requestCode == SIGN_REQUEST) {
+        } else if (requestCode == SIGN_REQUEST) {
             val response = IdpResponse.fromResultIntent(data)
 
             if (resultCode == RESULT_OK) {
@@ -254,7 +250,6 @@ class MainActivity : AppCompatActivity() {
                 Timber.e("message: ${response.error!!}")
             }
         }
-
     }
 
     companion object {

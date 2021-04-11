@@ -98,8 +98,8 @@ class AssetViewModel(
     }
 
 
-    fun uploadAlbumDoc(docId: String, uploadedSunnyPhotos: ArrayList<String>) {
-        val album = Album("Test", currentUserId.value!!, docId, uploadedSunnyPhotos)
+    fun uploadAlbumDoc(title: String, docId: String, uploadedSunnyPhotos: ArrayList<String>) {
+        val album = Album(title, currentUserId.value!!, docId, uploadedSunnyPhotos)
         Firebase.firestore.collection("albums")
             .document()
             .set(album, SetOptions.merge())
@@ -112,7 +112,7 @@ class AssetViewModel(
         _isLoading.value = false
     }
 
-    fun uploadAlbum() {
+    fun uploadAlbum(title: String) {
         _isLoading.value = true
         viewModelScope.launch {
             val doc = Firebase.firestore.collection("albums").document()
@@ -130,7 +130,7 @@ class AssetViewModel(
                             Timber.i("uri: $uri")
                             uploadedSunnyPhotos.add(uri.toString())
                             if (uploadedSunnyPhotos.size == expectedSize) {
-                                uploadAlbumDoc(docId, uploadedSunnyPhotos)
+                                uploadAlbumDoc(title, docId, uploadedSunnyPhotos)
                             }
                         }
                     }

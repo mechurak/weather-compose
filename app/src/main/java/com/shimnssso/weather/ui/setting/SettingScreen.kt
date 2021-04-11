@@ -83,6 +83,8 @@ fun SettingScreen(
     val currentUserId by assetViewModel.currentUserId.observeAsState("")
     val isLoading by assetViewModel.isLoading.observeAsState(false)
 
+    val showUploadDialog = remember { mutableStateOf(false) }
+
     Column {
         Spacer(
             Modifier
@@ -91,7 +93,7 @@ fun SettingScreen(
                 .fillMaxWidth()
         )
         Scaffold(
-            topBar = { AppBar(navController, assetViewModel, currentUserId) },
+            topBar = { AppBar(navController, currentUserId) { showUploadDialog.value = true } },
             modifier = Modifier.navigationBarsPadding()
         ) {
             val sunnyPhotos by assetViewModel.sunnyPhotos.observeAsState(listOf())
@@ -272,6 +274,18 @@ fun SettingScreen(
                     }
                 )
             }
+
+            if (showUploadDialog.value) {
+                UploadDialog(
+                    onDismiss = {
+                        showUploadDialog.value = false
+                    },
+                    onConfirm = { title ->
+                        showUploadDialog.value = false
+                        assetViewModel.uploadAlbum(title)
+                    }
+                )
+            }
         }
     }
 
@@ -283,7 +297,11 @@ fun SettingScreen(
 }
 
 @Composable
-private fun AppBar(navController: NavController?, assetViewModel: AssetViewModel, currentUserID: String) {
+private fun AppBar(
+    navController: NavController?,
+    currentUserID: String,
+    onUploadBtn: () -> Unit
+) {
     val activity = LocalContext.current as MainActivity
     TopAppBar(
         navigationIcon = {
@@ -314,8 +332,7 @@ private fun AppBar(navController: NavController?, assetViewModel: AssetViewModel
                 }
 
                 IconButton(onClick = {
-                    /* TODO: Navigate to share screen */
-                    assetViewModel.uploadAlbum()
+                    onUploadBtn()
                 }) {
                     Icon(Icons.Filled.Share, contentDescription = null)
                 }

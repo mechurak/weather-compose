@@ -17,12 +17,11 @@ package com.shimnssso.weather.viewmodels
 
 import android.os.Parcel
 import android.os.Parcelable
-import kotlin.collections.ArrayList
 
 data class Album(
-    val name: String,
-    val userId: String,
-    val documentId: String,
+    val name: String = "",
+    val userId: String = "",
+    var documentId: String = "",
     val sunnyImages: ArrayList<String> = ArrayList(),
     val image: String = "",
     val timeStamp: Long = System.currentTimeMillis(),

@@ -329,7 +329,7 @@ private fun AppBar(
                     Icon(Icons.Filled.Login, contentDescription = null)
                 }
             } else {
-                IconButton(onClick = { /* TODO: Navigate to online album screen */ }) {
+                IconButton(onClick = { navController!!.navigate("albumList") }) {
                     Icon(Icons.Filled.GetApp, contentDescription = null)
                 }
 

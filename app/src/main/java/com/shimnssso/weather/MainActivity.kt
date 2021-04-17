@@ -50,6 +50,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.shimnssso.weather.database.WeatherDatabase
+import com.shimnssso.weather.ui.albumlist.AlbumListScreen
 import com.shimnssso.weather.ui.home.HomeScreen
 import com.shimnssso.weather.ui.setting.SettingScreen
 import com.shimnssso.weather.ui.theme.MyTheme
@@ -269,6 +270,7 @@ fun MyApp() {
                 navController = navController
             )
         }
+        composable("albumList") { AlbumListScreen(navController = navController) }
     }
 }
 

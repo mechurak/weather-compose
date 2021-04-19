@@ -70,9 +70,8 @@ fun AlbumListScreen(
             modifier = Modifier.navigationBarsPadding()
         ) {
             LazyColumn(Modifier.fillMaxWidth()) {
-                item { Text("Album List Screen") }
                 items(albums) { album ->
-                    Text("name: ${album.name}, by: ${album.userId}")
+                    AlbumItem(album)
                 }
             }
         }

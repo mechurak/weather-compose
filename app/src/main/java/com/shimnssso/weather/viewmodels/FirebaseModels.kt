@@ -78,6 +78,18 @@ data class Album(
         return 0
     }
 
+    fun getImageCount(): Int {
+        return sunnyImages.size +
+            cloudyImages.size +
+            rainyImages.size +
+            snowyImages.size +
+            airGoodImages.size +
+            airFairImages.size +
+            airModerateImages.size +
+            airPoorImages.size +
+            airVeryPoorImages.size
+    }
+
     companion object CREATOR : Parcelable.Creator<Album> {
         override fun createFromParcel(parcel: Parcel): Album {
             return Album(parcel)

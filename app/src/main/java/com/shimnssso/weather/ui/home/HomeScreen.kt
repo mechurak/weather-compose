@@ -23,16 +23,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -48,9 +44,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsHeight
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.shimnssso.weather.MainActivity
 import com.shimnssso.weather.database.WeatherDatabase
-import com.shimnssso.weather.ui.SwipeToRefreshLayout
 import com.shimnssso.weather.viewmodels.FakeData
 import com.shimnssso.weather.viewmodels.WeatherViewModel
 
@@ -67,20 +64,12 @@ fun HomeScreen(
 
     val isLoading by weatherViewModel.isLoading.observeAsState(false)
 
-    SwipeToRefreshLayout(
-        refreshingState = isLoading,
-        onRefresh = { weatherViewModel.refreshDataFromRepository() },
-        refreshIndicator = {
-            Surface(elevation = 10.dp, shape = CircleShape) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(36.dp)
-                        .padding(4.dp)
-                )
-            }
-        },
-        content = { HomeContent(navController) }
-    )
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isLoading),
+        onRefresh = { weatherViewModel.refreshDataFromRepository() }
+    ) {
+        HomeContent(navController)
+    }
 }
 
 @Composable

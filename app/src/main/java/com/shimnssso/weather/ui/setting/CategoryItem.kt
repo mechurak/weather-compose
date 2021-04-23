@@ -19,7 +19,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -47,11 +45,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.rememberCoilPainter
 import com.shimnssso.weather.MainActivity
 import com.shimnssso.weather.R
 import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.viewmodels.AssetViewModel
-import dev.chrisbanes.accompanist.coil.CoilImage
 import java.io.File
 
 @Composable
@@ -93,35 +91,28 @@ fun CategoryItem(
         }
         if (photos.isEmpty()) {
             item {
-                CoilImage(
-                    data = R.drawable.ella,
+                Image(
+                    painter = rememberCoilPainter(
+                        request = R.drawable.ella,
+                        fadeIn = true,
+                    ),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    loading = {
-                        Box(Modifier.matchParentSize()) {
-                            CircularProgressIndicator(Modifier.align(Alignment.Center))
-                        }
-                    },
-                    fadeIn = true,
                     modifier = Modifier
                         .size(60.dp)
                         .clip(CircleShape)
                         .border(1.dp, Color.Black, CircleShape)
-                        .alpha(0.5f)
+                        .alpha(0.5f),
+                    contentScale = ContentScale.Crop,
                 )
             }
         } else {
             items(photos) { photo ->
-                CoilImage(
-                    data = File(photo.path),
+                Image(
+                    painter = rememberCoilPainter(
+                        request = File(photo.path),
+                        fadeIn = true,
+                    ),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    loading = {
-                        Box(Modifier.matchParentSize()) {
-                            CircularProgressIndicator(Modifier.align(Alignment.Center))
-                        }
-                    },
-                    fadeIn = true,
                     modifier = Modifier
                         .size(60.dp)
                         .clip(CircleShape)
@@ -130,7 +121,8 @@ fun CategoryItem(
                             detectTapGestures(
                                 onLongPress = { onLongPressed(photo) },
                             )
-                        }
+                        },
+                    contentScale = ContentScale.Crop,
                 )
             }
         }

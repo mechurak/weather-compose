@@ -15,8 +15,8 @@
  */
 package com.shimnssso.weather.ui.albumlist
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -40,8 +39,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.rememberCoilPainter
 import com.shimnssso.weather.viewmodels.Album
-import dev.chrisbanes.accompanist.coil.CoilImage
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -55,20 +54,17 @@ fun AlbumItem(album: Album) {
         verticalAlignment = Alignment.CenterVertically
 
     ) {
-        CoilImage(
-            data = album.sunnyImages[0],
+        Image(
+            painter = rememberCoilPainter(
+                request = album.sunnyImages[0],
+                fadeIn = true
+            ),
             contentDescription = null,
-            contentScale = ContentScale.Crop,
-            loading = {
-                Box(Modifier.matchParentSize()) {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
-                }
-            },
-            fadeIn = true,
             modifier = Modifier
                 .size(60.dp)
                 .clip(CircleShape)
-                .border(1.dp, Color.Black, CircleShape)
+                .border(1.dp, Color.Black, CircleShape),
+            contentScale = ContentScale.Crop,
         )
         Column(Modifier.padding(16.dp)) {
             val sdf = SimpleDateFormat("EEE, d MMM HH:mm", Locale.ENGLISH) // Wed, 4 Jul 12:08

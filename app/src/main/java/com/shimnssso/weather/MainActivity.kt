@@ -43,6 +43,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.firebase.ui.auth.IdpResponse
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.firebase.auth.FirebaseAuth
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -56,7 +57,6 @@ import com.shimnssso.weather.ui.setting.SettingScreen
 import com.shimnssso.weather.ui.theme.MyTheme
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import com.yalantis.ucrop.UCrop
-import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream

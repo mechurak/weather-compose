@@ -46,13 +46,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsHeight
 import com.shimnssso.weather.MainActivity
 import com.shimnssso.weather.database.WeatherDatabase
 import com.shimnssso.weather.ui.SwipeToRefreshLayout
 import com.shimnssso.weather.viewmodels.FakeData
 import com.shimnssso.weather.viewmodels.WeatherViewModel
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun HomeScreen(

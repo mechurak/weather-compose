@@ -15,6 +15,7 @@
  */
 package com.shimnssso.weather.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,10 +28,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.rememberCoilPainter
 import com.shimnssso.weather.utils.Utils
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import com.shimnssso.weather.viewmodels.WeatherHour
-import dev.chrisbanes.accompanist.coil.CoilImage
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,20 +48,25 @@ fun HourlySection(weatherList: List<WeatherHour>) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 val date = Date(weatherHour.dt * 1000)
                 Text(sdf.format(date), modifier = Modifier.padding(bottom = 8.dp))
-                CoilImage(
-                    data = AssetViewModel.getImage(weatherHour.weather),
+                Image(
+                    painter = rememberCoilPainter(
+                        request = AssetViewModel.getImage(weatherHour.weather),
+                        shouldRefetchOnSizeChange = { _, _ -> false },
+                    ),
                     contentDescription = weatherHour.weather,
                     modifier = Modifier
                         .padding(bottom = 8.dp)
-                        .size(50.dp)
-
+                        .size(50.dp),
                 )
-                CoilImage(
-                    data = AssetViewModel.getImage(weatherHour.air),
+                Image(
+                    painter = rememberCoilPainter(
+                        request = AssetViewModel.getImage(weatherHour.air),
+                        shouldRefetchOnSizeChange = { _, _ -> false },
+                    ),
                     contentDescription = weatherHour.air,
                     modifier = Modifier
                         .padding(bottom = 8.dp)
-                        .size(30.dp)
+                        .size(30.dp),
                 )
 
                 val temperatureValue = Utils.getTemp(weatherHour.temp)

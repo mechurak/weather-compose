@@ -15,6 +15,7 @@
  */
 package com.shimnssso.weather.ui.setting
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -60,13 +61,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.firebase.ui.auth.AuthUI
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsHeight
 import com.shimnssso.weather.MainActivity
 import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.database.WeatherDatabase
 import com.shimnssso.weather.viewmodels.AssetViewModel
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import java.io.File
 
 @Composable
@@ -221,22 +222,19 @@ fun SettingScreen(
 
             if (openDialog.value) {
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    CoilImage(
-                        data = File(currentPhoto.value!!.path),
+                    Image(
+                        painter = rememberCoilPainter(
+                            request = File(currentPhoto.value!!.path),
+                            fadeIn = true,
+                        ),
                         contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        loading = {
-                            Box(Modifier.matchParentSize()) {
-                                CircularProgressIndicator(Modifier.align(Alignment.Center))
-                            }
-                        },
-                        fadeIn = true,
                         modifier = Modifier
                             .padding(top = 40.dp)
                             .size(150.dp)
                             .clip(CircleShape)
                             .border(5.dp, Color.Black, CircleShape)
-                            .align(Alignment.Center)
+                            .align(Alignment.Center),
+                        contentScale = ContentScale.Crop,
                     )
                 }
 

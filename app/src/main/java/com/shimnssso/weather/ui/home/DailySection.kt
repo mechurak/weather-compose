@@ -15,6 +15,7 @@
  */
 package com.shimnssso.weather.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,10 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.rememberCoilPainter
 import com.shimnssso.weather.utils.Utils
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import com.shimnssso.weather.viewmodels.WeatherDay
-import dev.chrisbanes.accompanist.coil.CoilImage
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -52,20 +53,23 @@ fun DailySection(weatherList: List<WeatherDay>) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(sdf.format(date), modifier = Modifier.width(80.dp))
-                CoilImage(
-                    data = AssetViewModel.getImage(weatherDay.weather),
+                Image(
+                    painter = rememberCoilPainter(
+                        request = AssetViewModel.getImage(weatherDay.weather),
+                    ),
                     contentDescription = weatherDay.weather,
                     modifier = Modifier
                         .padding(bottom = 8.dp)
-                        .size(50.dp)
-
+                        .size(50.dp),
                 )
-                CoilImage(
-                    data = AssetViewModel.getImage(weatherDay.air),
+                Image(
+                    painter = rememberCoilPainter(
+                        request = AssetViewModel.getImage(weatherDay.air),
+                    ),
                     contentDescription = weatherDay.air,
                     modifier = Modifier
                         .padding(bottom = 8.dp)
-                        .size(30.dp)
+                        .size(30.dp),
                 )
 
                 val maxTemperature = Utils.getTemp(weatherDay.tempMax)

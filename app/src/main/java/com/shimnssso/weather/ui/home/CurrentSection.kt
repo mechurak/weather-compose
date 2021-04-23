@@ -22,6 +22,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,7 +33,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -46,12 +46,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.rememberCoilPainter
 import com.shimnssso.weather.R
 import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.utils.Utils
 import com.shimnssso.weather.viewmodels.AssetViewModel
 import com.shimnssso.weather.viewmodels.WeatherDay
-import dev.chrisbanes.accompanist.coil.CoilImage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -118,33 +118,26 @@ fun CurrentSection(
             .fillMaxWidth()
     ) {
         if (photoList.isEmpty()) {
-            CoilImage(
-                data = R.drawable.ella,
+            Image(
+                painter = rememberCoilPainter(
+                    request = R.drawable.ella,
+                    fadeIn = true,
+                ),
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
-                loading = {
-                    Box(Modifier.matchParentSize()) {
-                        CircularProgressIndicator(Modifier.align(Alignment.Center))
-                    }
-                },
-                fadeIn = true,
                 modifier = Modifier
                     .size(250.dp)
                     .clip(CircleShape)
                     .border(2.dp, Color.Black, CircleShape)
-                    .align(Alignment.CenterStart)
+                    .align(Alignment.CenterStart),
+                contentScale = ContentScale.Crop,
             )
         } else {
-            CoilImage(
-                data = File(photoList[photoIndex].path),
+            Image(
+                painter = rememberCoilPainter(
+                    request = File(photoList[photoIndex].path),
+                    fadeIn = true,
+                ),
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
-                loading = {
-                    Box(Modifier.matchParentSize()) {
-                        CircularProgressIndicator(Modifier.align(Alignment.Center))
-                    }
-                },
-                fadeIn = true,
                 modifier = Modifier
                     .size(250.dp)
                     .clip(CircleShape)
@@ -155,29 +148,33 @@ fun CurrentSection(
                         if (photoIndex >= photoList.size) {
                             photoIndex = 0
                         }
-                    }
+                    },
+                contentScale = ContentScale.Crop,
             )
         }
 
         val curWeatherPadding by animateDpAsState(if (isWeather) bottomPadding.dp else 0.dp)
         val curWeatherHeight by animateDpAsState(if (isWeather) weatherHeight.dp else 80.dp)
-        CoilImage(
-            data = AssetViewModel.getImage(weather.weather),
+        Image(
+            painter = rememberCoilPainter(
+                request = AssetViewModel.getImage(weather.weather),
+            ),
             contentDescription = weather.weather,
-            contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .padding(bottom = curWeatherPadding)
                 .width(80.dp)
                 .height(curWeatherHeight)
-                .align(Alignment.BottomStart)
+                .align(Alignment.BottomStart),
+            contentScale = ContentScale.FillBounds,
         )
 
         val curAirPadding by animateDpAsState(if (isWeather && photoList.isNotEmpty()) 0.dp else bottomPadding.dp)
         val curAirHeight by animateDpAsState(if (isWeather && photoList.isNotEmpty()) 60.dp else airHeight.dp)
-        CoilImage(
-            data = AssetViewModel.getImage(weather.air),
+        Image(
+            painter = rememberCoilPainter(
+                request = AssetViewModel.getImage(weather.air),
+            ),
             contentDescription = weather.air,
-            contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .padding(
                     start = 60.dp,
@@ -185,7 +182,8 @@ fun CurrentSection(
                 )
                 .width(60.dp)
                 .height(curAirHeight)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
+            contentScale = ContentScale.FillBounds,
         )
 
         Text(

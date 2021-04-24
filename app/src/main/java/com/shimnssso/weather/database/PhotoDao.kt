@@ -24,14 +24,17 @@ import androidx.room.Update
 @Dao
 interface PhotoDao {
     @Insert
-    suspend fun insert(night: Photo)
+    suspend fun insert(photo: Photo)
 
     @Update
-    suspend fun update(night: Photo)
+    suspend fun update(photo: Photo)
 
     // Room already uses a background thread for that specific @Query which returns LiveData.
     @Query("SELECT * from photo_table WHERE category = :category")
     fun getPhotos(category: String): LiveData<List<Photo>>
+
+    @Query("SELECT * from photo_table")
+    suspend fun getAllPhotos(): List<Photo>
 
     @Query("DELETE FROM photo_table WHERE photoId = :key")
     suspend fun remove(key: Long)

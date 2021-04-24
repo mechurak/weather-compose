@@ -24,6 +24,7 @@ import com.google.firebase.storage.ktx.storage
 import com.shimnssso.weather.database.Photo
 import com.shimnssso.weather.viewmodels.Album
 import com.shimnssso.weather.viewmodels.AlbumDigest
+import com.shimnssso.weather.viewmodels.AssetViewModel
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
@@ -31,8 +32,30 @@ object MyFirebase {
     private const val COLLECTION_ALBUMS = "albums"
     private const val COLLECTION_ALBUM_DIGESTS = "albumDigests"
 
-    private suspend fun uploadAlbumDoc(title: String, docId: String, uploadedSunnyPhotos: ArrayList<String>) {
-        val album = Album(uploadedSunnyPhotos)
+    private suspend fun uploadAlbumDoc(
+        title: String,
+        docId: String,
+        sunnyPhotos: ArrayList<String>,
+        cloudyPhotos: ArrayList<String>,
+        rainyPhotos: ArrayList<String>,
+        snowyPhotos: ArrayList<String>,
+        airVeryGoodPhotos: ArrayList<String>,
+        airFairPhotos: ArrayList<String>,
+        airModeratePhotos: ArrayList<String>,
+        airPoorPhotos: ArrayList<String>,
+        airVeryPoorPhotos: ArrayList<String>,
+    ) {
+        val album = Album(
+            sunnyPhotos,
+            cloudyPhotos,
+            rainyPhotos,
+            snowyPhotos,
+            airVeryGoodPhotos,
+            airFairPhotos,
+            airModeratePhotos,
+            airPoorPhotos,
+            airVeryPoorPhotos,
+        )
         try {
             Firebase.firestore.collection(COLLECTION_ALBUMS)
                 .document(docId)
@@ -45,7 +68,7 @@ object MyFirebase {
                 title,
                 Firebase.auth.currentUser!!.email!!,
                 docId,
-                uploadedSunnyPhotos[0],
+                sunnyPhotos[0],
                 album.getImageCount()
             )
             Firebase.firestore.collection(COLLECTION_ALBUM_DIGESTS)
@@ -67,7 +90,17 @@ object MyFirebase {
         val doc = Firebase.firestore.collection(COLLECTION_ALBUMS).document()
         val docId = doc.id
 
-        val uploadedSunnyPhotos = ArrayList<String>()
+        val sunnyPhotos = ArrayList<String>()
+        val cloudyPhotos = ArrayList<String>()
+        val rainyPhotos = ArrayList<String>()
+        val snowyPhotos = ArrayList<String>()
+
+        val airVeryGoodPhotos = ArrayList<String>()
+        val airFairPhotos = ArrayList<String>()
+        val airModeratePhotos = ArrayList<String>()
+        val airPoorPhotos = ArrayList<String>()
+        val airVeryPoorPhotos = ArrayList<String>()
+
         val storageFolder = Firebase.storage.getReference(docId)
         for (photo in photos) {
             val uri = Uri.parse("file://" + photo.path)
@@ -75,12 +108,35 @@ object MyFirebase {
             try {
                 val taskSnapshot = ref.putFile(uri).await()
                 val downloadUrl = taskSnapshot.metadata!!.reference!!.downloadUrl.await()
-                uploadedSunnyPhotos.add(downloadUrl.toString())
+                val targetList = when (photo.category) {
+                    AssetViewModel.CATEGORY_WEATHER_1_SUNNY -> sunnyPhotos
+                    AssetViewModel.CATEGORY_WEATHER_2_CLOUDY -> cloudyPhotos
+                    AssetViewModel.CATEGORY_WEATHER_3_RAINY -> rainyPhotos
+                    AssetViewModel.CATEGORY_WEATHER_4_SNOWY -> snowyPhotos
+                    AssetViewModel.CATEGORY_AIR_1_VERY_GOOD -> airVeryGoodPhotos
+                    AssetViewModel.CATEGORY_AIR_2_FAIR -> airFairPhotos
+                    AssetViewModel.CATEGORY_AIR_3_MODERATE -> airModeratePhotos
+                    AssetViewModel.CATEGORY_AIR_4_POOR -> airPoorPhotos
+                    AssetViewModel.CATEGORY_AIR_5_VERY_POOR -> airVeryPoorPhotos
+                    else -> sunnyPhotos
+                }
+                targetList.add(downloadUrl.toString())
             } catch (e: Exception) {
                 Timber.e(e)
             }
         }
-        uploadAlbumDoc(title, docId, uploadedSunnyPhotos)
+        uploadAlbumDoc(
+            title, docId,
+            sunnyPhotos,
+            cloudyPhotos,
+            rainyPhotos,
+            snowyPhotos,
+            airVeryGoodPhotos,
+            airFairPhotos,
+            airModeratePhotos,
+            airPoorPhotos,
+            airVeryPoorPhotos,
+        )
         return true
     }
 
@@ -92,9 +148,7 @@ object MyFirebase {
                 .await()
 
             Timber.i("getAlbumList(). succeeded")
-            Timber.i("getAlbumList(). $querySnapshot")
             for (document in querySnapshot.documents) {
-                Timber.d("document: $document")
                 val albumDigest = document.toObject(AlbumDigest::class.java)!!
                 retList.add(albumDigest)
             }

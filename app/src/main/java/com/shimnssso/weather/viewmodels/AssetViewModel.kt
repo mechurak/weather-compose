@@ -97,7 +97,9 @@ class AssetViewModel(
     fun uploadAlbum(title: String) {
         _isLoading.value = true
         viewModelScope.launch {
-            MyFirebase.uploadAlbum(title, sunnyPhotos.value!!)
+            val photos = dataSource.getAllPhotos()
+            Timber.i("photos.size: ${photos.size}")
+            MyFirebase.uploadAlbum(title, photos)
             _isLoading.value = false
         }
     }

@@ -21,11 +21,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.shimnssso.weather.firebase.MyFirebase
 import com.shimnssso.weather.viewmodels.AlbumDigest
-import timber.log.Timber
+import kotlinx.coroutines.launch
 
 class AlbumListViewModel(
     private val app: Application
@@ -48,23 +49,11 @@ class AlbumListViewModel(
     }
 
     fun fetchAlbumList() {
-        Firebase.firestore.collection("albumDigests")
-            .get()
-            .addOnSuccessListener {
-                Timber.i("getAlbumList(). succeeded")
-                Timber.i("getAlbumList(). $it")
-                // Here we have created a new instance for Boards ArrayList.
-                val retList: ArrayList<AlbumDigest> = ArrayList()
-                for (i in it.documents) {
-                    Timber.i("i: $i")
-                    val albumDigest = i.toObject(AlbumDigest::class.java)!!
-                    retList.add(albumDigest)
-                }
-                _albumDigests.value = retList
-            }
-            .addOnFailureListener { e ->
-                Timber.i("getAlbumList(). failed. $e")
-            }
+        _isLoading.value = true
+        viewModelScope.launch {
+            _albumDigests.value = MyFirebase.getAlbumDigests()
+            _isLoading.value = false
+        }
     }
 
     /**

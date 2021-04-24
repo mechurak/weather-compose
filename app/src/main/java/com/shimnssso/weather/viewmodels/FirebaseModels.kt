@@ -65,7 +65,6 @@ data class AlbumDigest(
     }
 }
 
-
 data class Album(
     val sunnyImages: ArrayList<String> = ArrayList(),
     val cloudyImages: ArrayList<String> = ArrayList(),

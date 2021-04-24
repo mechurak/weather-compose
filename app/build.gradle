@@ -123,6 +123,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:7.1.1'  // (https://github.com/firebase/firebaseui-android)
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
 
     testImplementation 'junit:junit:4.13.2'
 

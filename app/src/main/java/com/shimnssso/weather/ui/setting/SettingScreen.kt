@@ -112,7 +112,7 @@ fun SettingScreen(
             val openDialog = remember { mutableStateOf(false) }
 
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Header(
+                CategoryHeader(
                     title = "Weather",
                     description = "(designed by Freepik from Flaticon)"
                 ) // https://www.flaticon.com/packs/weather-255
@@ -160,7 +160,7 @@ fun SettingScreen(
                     }
                 )
 
-                Header(
+                CategoryHeader(
                     title = "Air Pollution",
                     description = "(designed by Baianat from Flaticon)"
                 ) // https://www.flaticon.com/packs/color-emotions-assets                Text("designed by Baianat from Flaticon")

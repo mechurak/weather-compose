@@ -156,4 +156,19 @@ object MyFirebase {
         }
         return retList
     }
+
+    suspend fun getAlbum(docId: String): Album? {
+        try {
+            val documentSnapshot = Firebase.firestore.collection(COLLECTION_ALBUMS)
+                .document(docId)
+                .get()
+                .await()
+
+            Timber.i("getAlbum(). succeeded")
+            return documentSnapshot.toObject(Album::class.java)
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+        return null
+    }
 }

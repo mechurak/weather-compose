@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Header(title: String, description: String) {
+fun CategoryHeader(title: String, description: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = Color.LightGray,

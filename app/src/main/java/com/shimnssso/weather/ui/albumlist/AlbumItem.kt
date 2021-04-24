@@ -17,6 +17,7 @@ package com.shimnssso.weather.ui.albumlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,10 +47,16 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun AlbumItem(albumDigest: AlbumDigest) {
+fun AlbumItem(
+    albumDigest: AlbumDigest,
+    onClick: (docId: String) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onClick(albumDigest.detailDocumentId)
+            }
             .padding(horizontal = 16.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
 

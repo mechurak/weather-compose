@@ -56,7 +56,7 @@ fun AlbumListScreen(
 
     val currentUserId by viewModel.currentUserId.observeAsState("")
     val isLoading by viewModel.isLoading.observeAsState(false)
-    val albums by viewModel.albums.observeAsState(listOf())
+    val albumDigests by viewModel.albumDigests.observeAsState(listOf())
 
     Column {
         Spacer(
@@ -70,7 +70,7 @@ fun AlbumListScreen(
             modifier = Modifier.navigationBarsPadding()
         ) {
             LazyColumn(Modifier.fillMaxWidth()) {
-                items(albums) { album ->
+                items(albumDigests) { album ->
                     AlbumItem(album)
                 }
             }

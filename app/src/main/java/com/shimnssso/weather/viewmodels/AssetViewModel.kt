@@ -97,18 +97,40 @@ class AssetViewModel(
         }
     }
 
-    fun uploadAlbumDoc(title: String, docId: String, uploadedSunnyPhotos: ArrayList<String>) {
-        val album = Album(title, currentUserId.value!!, docId, uploadedSunnyPhotos)
+    private fun uploadAlbumDoc(
+        title: String,
+        docId: String,
+        uploadedSunnyPhotos: ArrayList<String>
+    ) {
+        val album = Album(uploadedSunnyPhotos)
         Firebase.firestore.collection("albums")
-            .document()
+            .document(docId)
             .set(album, SetOptions.merge())
             .addOnSuccessListener {
-                Timber.i("uploadAlbum(). succeeded")
+                Timber.i("set album. succeeded")
             }
             .addOnFailureListener { e ->
-                Timber.i("uploadAlbum(). failed. $e")
+                Timber.i("set album. failed. $e")
             }
-        _isLoading.value = false
+
+        val albumDigest = AlbumDigest(
+            title,
+            Firebase.auth.currentUser!!.email!!,
+            docId,
+            uploadedSunnyPhotos[0],
+            album.getImageCount()
+        )
+        Firebase.firestore.collection("albumDigests")
+            .document(docId)
+            .set(albumDigest, SetOptions.merge())
+            .addOnSuccessListener {
+                Timber.i("set albumDigest. succeeded")
+                _isLoading.value = false
+            }
+            .addOnFailureListener { e ->
+                Timber.i("set albumDigest. failed. $e")
+                _isLoading.value = false
+            }
     }
 
     fun uploadAlbum(title: String) {

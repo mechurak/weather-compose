@@ -24,7 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.shimnssso.weather.viewmodels.Album
+import com.shimnssso.weather.viewmodels.AlbumDigest
 import timber.log.Timber
 
 class AlbumListViewModel(
@@ -38,9 +38,9 @@ class AlbumListViewModel(
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    private val _albums: MutableLiveData<List<Album>> = MutableLiveData(mutableListOf())
-    val albums: LiveData<List<Album>>
-        get() = _albums
+    private val _albumDigests: MutableLiveData<List<AlbumDigest>> = MutableLiveData(mutableListOf())
+    val albumDigests: LiveData<List<AlbumDigest>>
+        get() = _albumDigests
 
     init {
         _currentUserId.value = Firebase.auth.currentUser?.uid ?: ""
@@ -48,20 +48,19 @@ class AlbumListViewModel(
     }
 
     fun fetchAlbumList() {
-        Firebase.firestore.collection("albums")
+        Firebase.firestore.collection("albumDigests")
             .get()
             .addOnSuccessListener {
                 Timber.i("getAlbumList(). succeeded")
                 Timber.i("getAlbumList(). $it")
                 // Here we have created a new instance for Boards ArrayList.
-                val retList: ArrayList<Album> = ArrayList()
+                val retList: ArrayList<AlbumDigest> = ArrayList()
                 for (i in it.documents) {
                     Timber.i("i: $i")
-                    val album = i.toObject(Album::class.java)!!
-                    album.documentId = i.id
-                    retList.add(album)
+                    val albumDigest = i.toObject(AlbumDigest::class.java)!!
+                    retList.add(albumDigest)
                 }
-                _albums.value = retList
+                _albumDigests.value = retList
             }
             .addOnFailureListener { e ->
                 Timber.i("getAlbumList(). failed. $e")

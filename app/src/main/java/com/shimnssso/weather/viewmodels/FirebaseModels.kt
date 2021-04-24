@@ -18,15 +18,56 @@ package com.shimnssso.weather.viewmodels
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Album(
-    val name: String = "",
-    val userId: String = "",
-    var documentId: String = "",
-    val sunnyImages: ArrayList<String> = ArrayList(),
-    val image: String = "",
+data class AlbumDigest(
+    val title: String = "",
+    val userEmail: String = "",
+    val detailDocumentId: String = "",
+    val mainImage: String = "",
+    val imageCount: Int = -1,
     val timeStamp: Long = System.currentTimeMillis(),
     val likeCount: Int = -1,
     val downloadCount: Int = -1,
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readInt(),
+        parcel.readLong(),
+        parcel.readInt(),
+        parcel.readInt()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(title)
+        parcel.writeString(userEmail)
+        parcel.writeString(detailDocumentId)
+        parcel.writeString(mainImage)
+        parcel.writeInt(imageCount)
+        parcel.writeLong(timeStamp)
+        parcel.writeInt(likeCount)
+        parcel.writeInt(downloadCount)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<AlbumDigest> {
+        override fun createFromParcel(parcel: Parcel): AlbumDigest {
+            return AlbumDigest(parcel)
+        }
+
+        override fun newArray(size: Int): Array<AlbumDigest?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+
+data class Album(
+    val sunnyImages: ArrayList<String> = ArrayList(),
     val cloudyImages: ArrayList<String> = ArrayList(),
     val rainyImages: ArrayList<String> = ArrayList(),
     val snowyImages: ArrayList<String> = ArrayList(),
@@ -37,14 +78,7 @@ data class Album(
     val airVeryPoorImages: ArrayList<String> = ArrayList(),
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!,
         parcel.createStringArrayList()!!, // weather
-        parcel.readString()!!,
-        parcel.readLong(),
-        parcel.readInt(),
-        parcel.readInt(),
         parcel.createStringArrayList()!!,
         parcel.createStringArrayList()!!,
         parcel.createStringArrayList()!!,
@@ -56,14 +90,7 @@ data class Album(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-        parcel.writeString(userId)
-        parcel.writeString(documentId)
         parcel.writeStringList(sunnyImages)
-        parcel.writeString(image)
-        parcel.writeLong(timeStamp)
-        parcel.writeInt(likeCount)
-        parcel.writeInt(downloadCount)
         parcel.writeStringList(cloudyImages)
         parcel.writeStringList(rainyImages)
         parcel.writeStringList(snowyImages)

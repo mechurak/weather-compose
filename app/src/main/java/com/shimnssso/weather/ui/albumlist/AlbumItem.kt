@@ -40,13 +40,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
-import com.shimnssso.weather.viewmodels.Album
+import com.shimnssso.weather.viewmodels.AlbumDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @Composable
-fun AlbumItem(album: Album) {
+fun AlbumItem(albumDigest: AlbumDigest) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,7 +56,7 @@ fun AlbumItem(album: Album) {
     ) {
         Image(
             painter = rememberCoilPainter(
-                request = album.sunnyImages[0],
+                request = albumDigest.mainImage,
                 fadeIn = true
             ),
             contentDescription = null,
@@ -68,11 +68,11 @@ fun AlbumItem(album: Album) {
         )
         Column(Modifier.padding(16.dp)) {
             val sdf = SimpleDateFormat("EEE, d MMM HH:mm", Locale.ENGLISH) // Wed, 4 Jul 12:08
-            val date = Date(album.timeStamp * 1000)
+            val date = Date(albumDigest.timeStamp * 1000)
 
-            Text(text = "${album.name} (${album.getImageCount()} images)")
+            Text(text = "${albumDigest.title} (${albumDigest.imageCount} images)")
             Text(text = sdf.format(date))
-            Text(text = "by ${album.userId}")
+            Text(text = "by ${albumDigest.userEmail}")
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -85,7 +85,7 @@ fun AlbumItem(album: Album) {
                         contentDescription = null
                     )
                 }
-                Text(text = "${album.downloadCount}")
+                Text(text = "${albumDigest.downloadCount}")
                 Spacer(Modifier.width(16.dp))
                 IconButton(
                     onClick = {}
@@ -95,7 +95,7 @@ fun AlbumItem(album: Album) {
                         contentDescription = null
                     )
                 }
-                Text(text = "${album.downloadCount}")
+                Text(text = "${albumDigest.downloadCount}")
             }
         }
     }

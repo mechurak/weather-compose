@@ -72,7 +72,7 @@ fun AlbumListScreen(
             LazyColumn(Modifier.fillMaxWidth()) {
                 items(albumDigests) { album ->
                     AlbumItem(album) { docId ->
-                        navController!!.navigate("albumDetail/${docId}")
+                        navController!!.navigate("albumDetail/$docId")
                     }
                 }
             }

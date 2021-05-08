@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.shimnssso.weather.firebase.MyFirebase
 import com.shimnssso.weather.viewmodels.Album
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AlbumDetailViewModel(
@@ -39,11 +40,26 @@ class AlbumDetailViewModel(
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
+    private var _isDownloadDone = MutableLiveData<Boolean>(false)
+    val isDownloadDone: LiveData<Boolean>
+        get() = _isDownloadDone
+
     init {
         _isLoading.value = true
         viewModelScope.launch {
             _photos.value = MyFirebase.getAlbum(docId)
             _isLoading.value = false
+        }
+    }
+
+    fun downloadAlbum() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            // TODO: Remove current album
+            // TODO: Download this online album to device
+            delay(2000)
+            _isLoading.value = false
+            _isDownloadDone.value = true
         }
     }
 

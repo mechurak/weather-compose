@@ -38,12 +38,15 @@ import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import androidx.navigation.compose.popUpTo
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsHeight
 import com.shimnssso.weather.MainActivity
@@ -63,6 +66,8 @@ fun AlbumDetailScreen(
 
     val isLoading by viewModel.isLoading.observeAsState(true)
     val photos by viewModel.photos.observeAsState()
+    val isDownloadDone by viewModel.isDownloadDone.observeAsState(false)
+    val showDownloadDialog = remember { mutableStateOf(false) }
 
     Column {
         Spacer(
@@ -73,7 +78,7 @@ fun AlbumDetailScreen(
         )
 
         Scaffold(
-            topBar = { AppBar(navController) },
+            topBar = { AppBar(navController) { showDownloadDialog.value = true } },
             modifier = Modifier.navigationBarsPadding()
         ) {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -145,23 +150,46 @@ fun AlbumDetailScreen(
                     CircularProgressIndicator(Modifier.align(Alignment.Center))
                 }
             }
+
+            if (showDownloadDialog.value) {
+                Box(Modifier.fillMaxSize()) {
+                    DownloadDialog(
+                        onDismiss = {
+                            showDownloadDialog.value = false
+                        },
+                        onConfirm = {
+                            showDownloadDialog.value = false
+                            viewModel.downloadAlbum()
+                        }
+                    )
+                }
+            }
+
+            if (isDownloadDone) {
+                navController!!.navigate("home") {
+                    popUpTo("home") {
+                        inclusive = true
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
 private fun AppBar(
-    navController: NavController?
+    navController: NavController?,
+    onDownloadBtn: () -> Unit,
 ) {
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = { navController!!.navigate("albumList") }) {
+            IconButton(onClick = { navController!!.popBackStack() }) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = null)
             }
         },
         actions = {
             IconButton(
-                onClick = { /* TODO: */ }
+                onClick = { onDownloadBtn() }
             ) {
                 Icon(Icons.Filled.Download, contentDescription = null)
             }

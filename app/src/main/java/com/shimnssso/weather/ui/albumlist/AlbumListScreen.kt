@@ -88,7 +88,7 @@ private fun AppBar(
     val activity = LocalContext.current as MainActivity
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = { navController!!.navigate("home") }) {
+            IconButton(onClick = { navController!!.popBackStack() }) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = null)
             }
         },
